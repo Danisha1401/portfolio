@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="background: #f0efec; color: #111; font-family: 'Josefin Sans', sans-serif;">
+
+<div style="padding: 0 40px;">
+  <div style="position: relative; width: 100%; height: 66vh; min-height: 460px; overflow: hidden;">
+    <img src="https://static.wixstatic.com/media/a8a034_fa0626b7a275444b9d7c18e589f46125~mv2.jpg/v1/fill/w_1920,h_1000,al_c,q_85,enc_avif,quality_auto/Hero%20image_618.jpg" alt="SenseIT braille keypad on an OPPO phone" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 40px; background: linear-gradient(to top, rgba(0,0,0,0.62), transparent); color: #f0efec;">
+      <div style="font-size: 14px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300;">[Beyond Smart — OPPO × RCA 2022]</div>
+      <h1 style="margin: 10px 0 0; font-weight: 100; font-size: clamp(70px, 8vw, 160px); text-transform: uppercase; letter-spacing: 0.03em; line-height: 0.95;">SenseIT</h1>
+    </div>
+  </div>
+</div>
+
+<div style="max-width: 1500px; margin: 0 auto; padding: 70px 40px 0;">
+  <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 70px; align-items: start;">
+    <p style="margin: 0; font-size: clamp(24px, 2.1vw, 36px); font-weight: 300; line-height: 1.45; text-wrap: pretty;">A tactile system that lets a visually impaired person navigate what is on screen and type back — without listening through the operating system's voice assistant. It shortens both the comprehension path and the input path, so the most important thing on the screen is the first thing you find.</p>
+    <div style="display: flex; flex-direction: column; gap: 0;">
+      <sc-for list="{{ specs }}" as="sp" hint-placeholder-count="5">
+        <div style="display: flex; justify-content: space-between; gap: 20px; border-top: 1px dashed #b5b3ad; padding: 14px 0; font-weight: 300;">
+          <span style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #6f6d67;">{{ sp.label }}</span>
+          <span style="font-size: 16px; text-align: right;">{{ sp.value }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+
+<section data-screen-label="Paths" style="max-width: 1500px; margin: 0 auto; padding: 110px 40px 0;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed #b5b3ad; padding-top: 34px; gap: 30px; flex-wrap: wrap;">
+    <h2 style="margin: 0; font-weight: 200; font-size: clamp(38px, 3.4vw, 62px); text-transform: uppercase; letter-spacing: 0.03em;">The comprehension path</h2>
+    <div style="display: flex; gap: 10px;">
+      <sc-for list="{{ pathTabs }}" as="pt" hint-placeholder-count="2">
+        <div onClick="{{ pt.select }}" style="cursor: pointer; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; padding: 12px 22px; border: 1px solid {{ pt.border }}; background: {{ pt.bg }}; color: {{ pt.color }};">{{ pt.label }}</div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 300px 1fr; gap: 60px; margin-top: 44px; align-items: start;">
+    <div style="display: flex; flex-direction: column; gap: 20px; position: sticky; top: 40px;">
+      <div style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">Steps to reach the target</div>
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <span style="font-weight: 100; font-size: 120px; line-height: 0.82; color: {{ pathCountColor }};">{{ pathCount }}</span>
+        <span style="font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">steps</span>
+      </div>
+      <div style="height: 6px; background: #dddbd4; overflow: hidden;">
+        <div style="width: {{ pathBarWidth }}; height: 100%; background: {{ pathCountColor }}; transition: width 0.45s cubic-bezier(0.22,1,0.36,1);"></div>
+      </div>
+      <p style="margin: 0; font-size: 17px; font-weight: 300; line-height: 1.6; color: #3c3b38; text-wrap: pretty;">{{ pathNote }}</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 44px; align-content: start;">
+      <sc-for list="{{ pathSteps }}" as="st" hint-placeholder-count="6">
+        <div style="display: grid; grid-template-columns: 44px 1fr; gap: 18px; align-items: baseline; border-top: 1px dashed #cfcdc7; padding: 18px 0;">
+          <span style="font-size: 14px; letter-spacing: 0.12em; font-weight: 300; color: {{ st.numColor }};">{{ st.num }}</span>
+          <span style="font-size: 19px; font-weight: 300; line-height: 1.45; text-wrap: pretty;">{{ st.text }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Braille" style="max-width: 1500px; margin: 0 auto; padding: 110px 40px 0;">
+  <div style="border-top: 1px dashed #b5b3ad; padding-top: 34px;">
+    <h2 style="margin: 0; font-weight: 200; font-size: clamp(38px, 3.4vw, 62px); text-transform: uppercase; letter-spacing: 0.03em;">Try the keypad</h2>
+    <p style="margin: 16px 0 0; font-size: 18px; font-weight: 300; line-height: 1.6; color: #3c3b38; max-width: 760px;">Six dots, one cell, sixty-four combinations. Toggle the dots to see which letter the cell resolves to — this is the input model the keypad is built on.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: auto 1fr; gap: 80px; margin-top: 50px; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 40px;">
+      <div style="display: grid; grid-template-columns: repeat(2, 92px); grid-template-rows: repeat(3, 92px); gap: 16px;">
+        <sc-for list="{{ composer }}" as="d" hint-placeholder-count="6">
+          <div onClick="{{ d.toggle }}" style="cursor: pointer; border-radius: 50%; border: 1px solid #111; background: {{ d.bg }}; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 300; letter-spacing: 0.1em; color: {{ d.color }}; transition: background 0.18s, color 0.18s;">{{ d.n }}</div>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">Resolves to</div>
+        <div style="font-weight: 100; font-size: 140px; line-height: 0.8; color: {{ composedColor }};">{{ composedLetter }}</div>
+        <div onClick="{{ clearComposer }}" style="cursor: pointer; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; border-bottom: 1px solid #111; align-self: flex-start;">[Clear cell]</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <div style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">Type anything — read it back in braille</div>
+      <input value="{{ phrase }}" onChange="{{ setPhrase }}" maxLength="18" style="border: none; border-bottom: 1px solid #111; background: transparent; font-family: inherit; font-weight: 200; font-size: 42px; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 0; outline: none; color: #111; width: 100%;">
+      <div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start; min-height: 120px;">
+        <sc-for list="{{ phraseCells }}" as="c" hint-placeholder-count="7">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <div style="display: grid; grid-template-columns: repeat(2, 18px); grid-template-rows: repeat(3, 18px); gap: 7px;">
+              <sc-for list="{{ c.dots }}" as="dd" hint-placeholder-count="6">
+                <div style="border-radius: 50%; border: 1px solid #9b9992; background: {{ dd.bg }};"></div>
+              </sc-for>
+            </div>
+            <span style="font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">{{ c.letter }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Product" style="max-width: 1500px; margin: 0 auto; padding: 110px 40px 0;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed #b5b3ad; padding-top: 34px; gap: 30px; flex-wrap: wrap;">
+    <h2 style="margin: 0; font-weight: 200; font-size: clamp(38px, 3.4vw, 62px); text-transform: uppercase; letter-spacing: 0.03em;">Three parts, one system</h2>
+    <div style="display: flex; gap: 10px;">
+      <sc-for list="{{ partTabs }}" as="tb" hint-placeholder-count="3">
+        <div onClick="{{ tb.select }}" style="cursor: pointer; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; padding: 12px 22px; border: 1px solid {{ tb.border }}; background: {{ tb.bg }}; color: {{ tb.color }};">{{ tb.label }}</div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 60px; margin-top: 40px; align-items: center;">
+    <img src="{{ partImg }}" alt="{{ partTitle }}" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;">
+    <div style="display: flex; flex-direction: column; gap: 22px;">
+      <h3 style="margin: 0; font-weight: 200; font-size: clamp(30px, 2.6vw, 46px); text-transform: uppercase; letter-spacing: 0.03em;">{{ partTitle }}</h3>
+      <p style="margin: 0; font-size: 18px; font-weight: 300; line-height: 1.7; color: #3c3b38; text-wrap: pretty;">{{ partText }}</p>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <sc-for list="{{ partFacts }}" as="f" hint-placeholder-count="3">
+          <div style="border-top: 1px dashed #cfcdc7; padding-top: 10px; font-size: 15px; font-weight: 300; letter-spacing: 0.06em; text-transform: uppercase; color: #6f6d67;">{{ f.t }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Process" style="max-width: 1500px; margin: 0 auto; padding: 110px 40px 0;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed #b5b3ad; padding-top: 34px; gap: 30px; flex-wrap: wrap;">
+    <h2 style="margin: 0; font-weight: 200; font-size: clamp(38px, 3.4vw, 62px); text-transform: uppercase; letter-spacing: 0.03em;">Journey of SenseIT</h2>
+    <div style="display: flex; align-items: center; gap: 22px; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300;">
+      <span onClick="{{ prevStep }}" style="cursor: pointer;">[Prev]</span>
+      <span style="color: #6f6d67;">{{ stepCounter }}</span>
+      <span onClick="{{ nextStep }}" style="cursor: pointer;">[Next]</span>
+    </div>
+  </div>
+  <div style="display: flex; gap: 10px; margin-top: 34px;">
+    <sc-for list="{{ stepTabs }}" as="s" hint-placeholder-count="6">
+      <div onClick="{{ s.select }}" style="cursor: pointer; flex: 1 1 0; border-top: 2px solid {{ s.rail }}; padding-top: 12px; display: flex; flex-direction: column; gap: 4px; color: {{ s.color }};">
+        <span style="font-size: 12px; letter-spacing: 0.12em; font-weight: 300;">{{ s.num }}</span>
+        <span style="font-size: 15px; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.25;">{{ s.label }}</span>
+      </div>
+    </sc-for>
+  </div>
+  <div ref="{{ trackRef }}" onScroll="{{ onTrackScroll }}" style="display: flex; gap: 32px; margin-top: 36px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 10px;">
+    <sc-for list="{{ stepCards }}" as="c" hint-placeholder-count="6">
+      <div style="flex: 0 0 68%; scroll-snap-align: center; display: flex; flex-direction: column; gap: 20px; opacity: {{ c.opacity }}; transition: opacity 0.4s;">
+        <img src="{{ c.img }}" alt="{{ c.label }}" style="width: 100%; aspect-ratio: 16/9; object-fit: contain; background: #e6e4de; display: block;">
+        <div style="display: flex; gap: 18px; align-items: baseline;">
+          <span style="font-size: 13px; letter-spacing: 0.12em; font-weight: 300; color: #6f6d67;">{{ c.num }}</span>
+          <span style="font-size: 22px; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase;">{{ c.label }}</span>
+        </div>
+        <p style="margin: 0; font-size: 18px; font-weight: 300; line-height: 1.65; color: #3c3b38; text-wrap: pretty;">{{ c.text }}</p>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="Exhibition" style="max-width: 1500px; margin: 0 auto; padding: 110px 40px 0;">
+  <div style="border-top: 1px dashed #b5b3ad; padding-top: 34px; display: flex; justify-content: space-between; align-items: baseline; gap: 30px; flex-wrap: wrap;">
+    <h2 style="margin: 0; font-weight: 200; font-size: clamp(38px, 3.4vw, 62px); text-transform: uppercase; letter-spacing: 0.03em;">London Design Festival</h2>
+    <div style="font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">Design Products, RCA · September 2022</div>
+  </div>
+  <p style="margin: 24px 0 0; font-size: 19px; font-weight: 300; line-height: 1.65; color: #3c3b38; max-width: 900px; text-wrap: pretty;">Shown as part of OPPO × RCA — a collaboration exploring what lies "Beyond Smart" — alongside work by graduating and current students of the Design Products programme.</p>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px;">
+    <sc-for list="{{ exhibition }}" as="ex" hint-placeholder-count="3">
+      <img src="{{ ex.img }}" alt="SenseIT at the London Design Festival" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;">
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="Resources" style="max-width: 1500px; margin: 0 auto; padding: 110px 40px 40px;">
+  <div style="border-top: 1px dashed #b5b3ad; padding-top: 34px;">
+    <h2 style="margin: 0; font-weight: 200; font-size: clamp(38px, 3.4vw, 62px); text-transform: uppercase; letter-spacing: 0.03em;">Resources</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 34px;">
+    <sc-for list="{{ resources }}" as="r" hint-placeholder-count="6">
+      <a href="{{ r.href }}" target="_blank" rel="noopener" style="display: flex; flex-direction: column; gap: 12px; padding: 30px; background: #e9e7e2; color: #111; min-height: 150px;" style-hover="background: #111; color: #f0efec;">
+        <span style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; opacity: 0.7;">{{ r.kind }}</span>
+        <span style="font-size: 24px; font-weight: 300; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.2;">{{ r.label }}</span>
+        <span style="font-size: 15px; font-weight: 300; line-height: 1.5; opacity: 0.75; margin-top: auto;">{{ r.note }}</span>
+      </a>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="Credits" style="max-width: 1500px; margin: 0 auto; padding: 40px 40px 0;">
+  <div style="border-top: 1px dashed #b5b3ad; padding-top: 34px; display: grid; grid-template-columns: 340px 1fr; gap: 40px;">
+    <h3 style="margin: 0; font-weight: 300; font-size: 24px; text-transform: uppercase; letter-spacing: 0.08em;">Credits</h3>
+    <p style="margin: 0; font-size: 18px; font-weight: 300; line-height: 1.7; color: #3c3b38; max-width: 760px; text-wrap: pretty;">Designed with Yannick Ewertz for the OPPO × RCA "Beyond Smart" collaboration, 2022. Two designers from different disciplines, a summer of ideation sessions, and a shared brief: contribute something useful to someone the industry keeps designing around.</p>
+  </div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { path: 0, cell: [], part: 0, step: 0, phrase: 'SENSEIT' };
+  _map() {
+    return { a:[1], b:[1,2], c:[1,4], d:[1,4,5], e:[1,5], f:[1,2,4], g:[1,2,4,5], h:[1,2,5], i:[2,4], j:[2,4,5],
+      k:[1,3], l:[1,2,3], m:[1,3,4], n:[1,3,4,5], o:[1,3,5], p:[1,2,3,4], q:[1,2,3,4,5], r:[1,2,3,5], s:[2,3,4], t:[2,3,4,5],
+      u:[1,3,6], v:[1,2,3,6], w:[2,4,5,6], x:[1,3,4,6], y:[1,3,4,5,6], z:[1,3,5,6] };
+  }
+  _goStep(i) {
+    this.setState({ step: i });
+    const t = this._track;
+    if (!t || !t.children[i]) return;
+    const k = t.children[i];
+    t.scrollTo({ left: k.offsetLeft - (t.clientWidth - k.offsetWidth) / 2, behavior: 'smooth' });
+  }
+  renderVals() {
+    const M = this._map();
+    const W = 'https://static.wixstatic.com/media/';
+    const paths = [
+      { label: 'Voice assistant', note: 'The user listens through the whole menu before the target is even announced — comprehension time scales with how much is on screen.',
+        steps: ['Wake the assistant', 'Listen to the screen title', 'Listen through menu item 1', 'Listen through menu item 2', 'Listen through menu item 3', 'Hear the target item', 'Confirm by voice', 'Wait for the confirmation read-back'] },
+      { label: 'SenseIT', note: 'The tempered-glass layout tells the fingers where things are; the braille keypad inputs directly. The path stops scaling with screen content.',
+        steps: ['Feel the glass layout to locate the region', 'Type or select on the braille keypad'] },
+    ];
+    const parts = [
+      { label: 'Tempered glass', title: 'SenseIT tempered glass', img: W + 'ee9626_439e763f462b4233a50eca2e60ddf3fc~mv2.jpg/v1/crop/x_0,y_282,w_2560,h_1281/fill/w_1400,h_700,al_c,q_85,enc_avif,quality_auto/Tempered_Glass_49.jpg',
+        text: 'A protective glass on the front of the phone that gives the touch display a tactile grammar. The raised layout lets a user locate applications and on-screen buttons by feel rather than by listening — and it is cheap enough to be bought like any other screen protector.',
+        facts: ['Tactile layout mapped to the OS grid', 'Standard screen-protector form factor', 'Economically affordable — no new device required'] },
+      { label: 'Cover', title: 'SenseIT cover', img: W + 'ee9626_34c02e430e2541ff9b23baefc5dab74f~mv2.jpg/v1/crop/x_0,y_259,w_2560,h_1281/fill/w_1400,h_700,al_c,q_85,enc_avif,quality_auto/Case_50.jpg',
+        text: 'The cover is the bridge. It holds the magnetic contacts the keypad snaps onto, and it is what allows the keypad\u2019s functions to talk to the phone. It fits any OPPO handset, so the accessible mode is an accessory decision rather than a purchase decision.',
+        facts: ['Magnetic attachment for the keypad', 'Fits across the OPPO range', 'Enables visually impaired mode on attach'] },
+      { label: 'Keypad', title: 'SenseIT keypad', img: W + 'ee9626_ac5026a88c0349e2b368b6ee8a56165b~mv2.jpg/v1/crop/x_0,y_137,w_2560,h_1523/fill/w_1400,h_830,al_c,q_85,enc_avif,quality_auto/Keyboard_53.jpg',
+        text: 'A detachable braille keypad built for typing speed rather than novelty. Attaching it to the cover automatically switches the phone into visually impaired mode; it works in both orientations, and detaches when the user doesn\u2019t need it.',
+        facts: ['Six-dot braille input', 'Portable and detachable', 'Works in portrait and landscape'] },
+    ];
+    const steps = [
+      { label: 'Problem storyboard', img: W + 'a8a034_b2d603aedb304115b0932696004bfd6a~mv2.png/v1/crop/x_1,y_8,w_1866,h_796/fill/w_1600,h_683,al_c,q_90,enc_avif,quality_auto/Screenshot.png',
+        text: 'We started by storyboarding the actual failure: a visually impaired user trying to reach one item on a screen, and the voice assistant reading everything else first. Framing it as a path-length problem rather than an audio problem set the direction for everything after.' },
+      { label: 'Market study', img: W + 'a8a034_5984660276cd4720bb67c35aae9a8b60~mv2.png/v1/fill/w_1424,h_696,al_c,lg_1,q_85,enc_avif,quality_auto/a8a034_5984660276cd4720bb67c35aae9a8b60~mv2.png',
+        text: 'A survey of existing assistive hardware and software: refreshable braille displays, screen readers, dedicated phones. Almost all of it asks the user to buy a separate device or to accept an audio-only interface \u2014 the gap we aimed at was an accessory on a phone they already own.' },
+      { label: 'Braille key ideation', img: W + 'a8a034_8b1200cf612e42e28c6cca149313f30e~mv2.png/v1/fill/w_1600,h_1083,al_c,q_90,enc_avif,quality_auto/Screenshot.png',
+        text: 'Sketch rounds on the input itself \u2014 braille key arrangements, rotating lips, button travel, and where a hand naturally sits on the back of a phone. "Why not on the back of the phone?" became the pivot that made the keypad viable.' },
+      { label: 'Layout studies', img: W + 'a8a034_d2a686ab90e8422b91f3cb623bea740d~mv2.png/v1/fill/w_1600,h_1097,al_c,q_90,enc_avif,quality_auto/Screenshot.png',
+        text: 'Mapping the tactile layout onto real OS screens: how many regions can a fingertip reliably distinguish, how they align to the phone\u2019s grid, and how the glass communicates hierarchy without becoming a maze.' },
+      { label: 'Prototypes', img: W + 'a8a034_cbc26d84c6924bd99defad2172984098~mv2.png/v1/fill/w_1600,h_1104,al_c,q_90,enc_avif,quality_auto/Screenshot.png',
+        text: '3D printed keypads mounted on the back of an OPPO handset, tested for reach, magnet strength and orientation changes. Each round cut something: fewer keys, shallower travel, one clear attach position.' },
+      { label: 'Final system', img: W + 'a8a034_40e2ee5152ec49569a2b49b52e687ccc~mv2.png/v1/fill/w_1600,h_1105,al_c,q_90,enc_avif,quality_auto/Screenshot.png',
+        text: 'Glass, cover and keypad resolved as one system with a single interaction rule: attach to enable, feel to navigate, type to respond. Presented at the London Design Festival 2022.' },
+    ];
+    const p = paths[this.state.path], pa = parts[this.state.part], st = steps[this.state.step];
+    const cell = this.state.cell;
+    const key = Object.keys(M).find(k => M[k].length === cell.length && M[k].every(n => cell.includes(n)));
+    const cells = (this.state.phrase || '').toLowerCase().split('').map(ch => {
+      const dots = M[ch] || [];
+      return { letter: ch === ' ' ? '·' : ch.toUpperCase(), dots: [1,2,3,4,5,6].map(n => ({ bg: dots.includes(n) ? '#111' : 'transparent' })) };
+    });
+    return {
+      specs: [
+        { label: 'Programme', value: 'OPPO × RCA — Beyond Smart' },
+        { label: 'Year', value: '2022' },
+        { label: 'Team', value: 'Danisha Mehta, Yannick Ewertz' },
+        { label: 'Discipline', value: 'Product design, inclusive UX, prototyping' },
+        { label: 'Shown at', value: 'London Design Festival 2022' },
+      ],
+      pathTabs: paths.map((x, i) => ({ label: x.label,
+        select: () => this.setState({ path: i }),
+        bg: i === this.state.path ? '#111' : 'transparent',
+        color: i === this.state.path ? '#f0efec' : '#111',
+        border: '#111' })),
+      pathSteps: p.steps.map((t, i) => ({ text: t, num: String(i + 1).padStart(2, '0'), numColor: this.state.path === 0 ? '#a5a39c' : '#d1310f' })),
+      pathCount: String(p.steps.length).padStart(2, '0'),
+      pathCountColor: this.state.path === 0 ? '#111' : '#d1310f',
+      pathBarWidth: Math.round(p.steps.length / 8 * 100) + '%',
+      pathNote: p.note,
+      composer: [1,2,3,4,5,6].map(n => ({ n: String(n),
+        bg: cell.includes(n) ? '#111' : 'transparent',
+        color: cell.includes(n) ? '#f0efec' : '#a5a39c',
+        toggle: () => this.setState(s => ({ cell: s.cell.includes(n) ? s.cell.filter(x => x !== n) : s.cell.concat(n) })) })),
+      composedLetter: cell.length === 0 ? '·' : (key ? key.toUpperCase() : '—'),
+      composedColor: key ? '#111' : '#a5a39c',
+      clearComposer: () => this.setState({ cell: [] }),
+      phrase: this.state.phrase,
+      setPhrase: e => this.setState({ phrase: e.target.value.replace(/[^a-zA-Z ]/g, '').toUpperCase() }),
+      phraseCells: cells,
+      partTabs: parts.map((x, i) => ({ label: x.label,
+        select: () => this.setState({ part: i }),
+        bg: i === this.state.part ? '#111' : 'transparent',
+        color: i === this.state.part ? '#f0efec' : '#111',
+        border: '#111' })),
+      partImg: pa.img, partTitle: pa.title, partText: pa.text, partFacts: pa.facts.map(t => ({ t })),
+      stepTabs: steps.map((x, i) => ({ label: x.label, num: String(i + 1).padStart(2, '0'),
+        color: i === this.state.step ? '#111' : '#a5a39c',
+        rail: i === this.state.step ? '#111' : '#d5d3cc',
+        select: () => this._goStep(i) })),
+      stepCards: steps.map((x, i) => ({ img: x.img, label: x.label, text: x.text,
+        num: String(i + 1).padStart(2, '0'),
+        opacity: i === this.state.step ? '1' : '0.42' })),
+      trackRef: el => { this._track = el; },
+      onTrackScroll: () => {
+        const t = this._track;
+        if (!t) return;
+        clearTimeout(this._st);
+        this._st = setTimeout(() => {
+          const kids = Array.from(t.children);
+          const mid = t.scrollLeft + t.clientWidth / 2;
+          let best = 0, bd = Infinity;
+          kids.forEach((k, i) => {
+            const c = k.offsetLeft + k.offsetWidth / 2;
+            if (Math.abs(c - mid) < bd) { bd = Math.abs(c - mid); best = i; }
+          });
+          if (best !== this.state.step) this.setState({ step: best });
+        }, 90);
+      },
+      stepImg: st.img, stepLabel: st.label, stepText: st.text,
+      stepCounter: String(this.state.step + 1).padStart(2, '0') + ' / ' + String(steps.length).padStart(2, '0'),
+      prevStep: () => this._goStep((this.state.step - 1 + steps.length) % steps.length),
+      nextStep: () => this._goStep((this.state.step + 1) % steps.length),
+      exhibition: [
+        { img: W + 'ee9626_f635799e7dfc4a1eb3d2ec6b59a6f566~mv2.webp/v1/fill/w_900,h_675,al_c,q_85,enc_avif,quality_auto/filters-format(webp).webp' },
+        { img: W + 'ee9626_664dc7c5e2b54b3a8d1517048f2eee96~mv2.png/v1/fill/w_900,h_675,al_c,q_90,enc_avif,quality_auto/ee9626_664dc7c5e2b54b3a8d1517048f2eee96~mv2.png' },
+        { img: W + 'ee9626_72fad720ce804b80947709d25a45f96e~mv2.jpg/v1/fill/w_900,h_675,al_c,q_85,enc_avif,quality_auto/ee9626_72fad720ce804b80947709d25a45f96e~mv2.jpg' },
+      ],
+      resources: [
+        { kind: 'Project site', label: 'SenseIT', note: 'The product microsite built for the launch', href: 'https://senseitbraille.wixsite.com/senseit' },
+        { kind: 'Film', label: 'Product video', note: 'The system in use', href: 'https://senseitbraille.wixsite.com/senseit/blank-4' },
+        { kind: 'Document', label: 'Product manual', note: 'Attach, enable, type — the full instructions', href: 'https://senseitbraille.wixsite.com/senseit/about-3' },
+        { kind: 'Exhibition', label: 'London Design Festival', note: 'OPPO × RCA, Beyond Smart, September 2022', href: 'https://senseitbraille.wixsite.com/senseit/about-3-1' },
+        { kind: 'Degree show', label: 'RCA 2023 profile', note: 'Royal College of Art graduate showcase', href: 'https://2023.rca.ac.uk/students/danisha-mehta/' },
+        { kind: 'Research', label: 'Wearable tech dissertation', note: 'The thesis behind the tactile thinking (PDF)', href: 'https://bae98dcd-b5d9-47e3-a62b-a811d85cc525.filesusr.com/ugd/a8a034_4220282cb6c04e6eaddf6464d1069201.pdf' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

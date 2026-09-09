@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;300;400;600&amp;display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #f0efec; }
+body { font-family: 'Josefin Sans', sans-serif; }
+::selection { background: #d1310f; color: #fff; }
+a { color: inherit; text-decoration: none; }
+a:hover { color: #d1310f; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</helmet>
+<div style="background: #f0efec; color: #111; min-width: 1100px;">
+
+<header style="position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 30px; padding: 15px 40px; box-sizing: border-box; background: rgba(240,239,236,0.6); backdrop-filter: blur(22px) saturate(1.7); -webkit-backdrop-filter: blur(22px) saturate(1.7); border-bottom: 1px solid rgba(17,17,17,0.08); box-shadow: 0 1px 40px rgba(0,0,0,0.06); color: #111;">
+  <a href="#top" onClick="{{ goHome }}" style="justify-self: start; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; color: #111;" style-hover="color: #d1310f;">DM</a>
+  <nav style="justify-self: center; display: flex; gap: 28px;">
+    <sc-for list="{{ headerNav }}" as="h" hint-placeholder-count="6">
+      <a href="{{ h.href }}" onClick="{{ h.onClick }}" style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; color: #46443f;" style-hover="color: #d1310f;">{{ h.label }}</a>
+    </sc-for>
+  </nav>
+  <div onClick="{{ toggleMenu }}" style="justify-self: end; cursor: pointer; width: 44px; height: 44px; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 7px;">
+    <sc-if value="{{ menuClosed }}" hint-placeholder-val="{{ true }}">
+      <div style="width: 32px; height: 1.5px; background: #111;"></div>
+      <div style="width: 32px; height: 1.5px; background: #111;"></div>
+    </sc-if>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="font-size: 26px; font-weight: 200; line-height: 1; color: #111;">✕</div>
+    </sc-if>
+  </div>
+</header>
+
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position: fixed; inset: 0; z-index: 95; background: #f0efec; box-sizing: border-box; padding: 96px 5vw 40px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 5vw; animation: fadeUp 0.45s ease both; overflow-y: auto;">
+    <div style="display: flex; flex-direction: column; min-height: 0;">
+      <div style="font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 300; color: #8a887f;">Menu — Danisha Mehta</div>
+      <nav style="display: flex; flex-direction: column; margin-top: 20px;">
+        <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="7">
+          <a href="{{ nav.href }}" onClick="{{ nav.onClick }}" onMouseEnter="{{ nav.onHover }}" style="display: grid; grid-template-columns: 46px 1fr auto; align-items: baseline; gap: 20px; border-top: 1px dashed #cfcdc7; padding: 11px 0; color: #111;" style-hover="color: #d1310f;">
+            <span style="font-size: 12px; letter-spacing: 0.14em; font-weight: 300; color: #8a887f;">{{ nav.num }}</span>
+            <span style="font-size: clamp(26px, 2.9vw, 46px); font-weight: 200; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.04;">{{ nav.label }}</span>
+            <span style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; color: #8a887f;">{{ nav.meta }}</span>
+          </a>
+        </sc-for>
+      </nav>
+      <div style="margin-top: auto; padding-top: 30px; display: flex; gap: 30px; flex-wrap: wrap; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">
+        <a href="mailto:danishamehta@gmail.com" style="text-transform: none;">danishamehta@gmail.com</a>
+        <a href="http://linkedin.com/in/danisha-mehta-9488b4183" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="http://be.net/danishamehta14" target="_blank" rel="noopener">Behance</a>
+        <span>London — {{ clock }}</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 18px; justify-content: center; min-width: 0;">
+      <sc-if value="{{ menuImg }}" hint-placeholder-val="{{ false }}">
+        <img src="{{ menuImg }}" alt="" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;">
+      </sc-if>
+      <div style="font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">{{ menuCaption }}</div>
+      <p style="margin: 0; font-size: 18px; font-weight: 300; line-height: 1.6; color: #3c3b38; max-width: 460px; text-wrap: pretty;">{{ menuBlurb }}</p>
+    </div>
+  </div>
+</sc-if>
+
+<section id="top" data-screen-label="Hero" onMouseMove="{{ heroMouseMove }}" style="position: relative; height: 100vh; min-height: 720px; overflow: hidden;">
+  <div ref="{{ vLineRef }}" style="position: absolute; left: 50%; top: 0; bottom: 0; width: 0; border-left: 1px dashed #b5b3ad; pointer-events: none; will-change: left;"></div>
+  <div ref="{{ hLineRef }}" style="position: absolute; top: 41%; left: 0; right: 0; height: 0; border-top: 1px dashed #b5b3ad; pointer-events: none; will-change: top;"></div>
+  <div style="position: absolute; left: 40px; top: 38.5%; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300;">Product · Digital · Agentic Design</div>
+  <div ref="{{ heroImgRef }}" style="position: absolute; left: 50%; top: 41%; transform: translate(-50%, -60%); text-align: center; pointer-events: none; will-change: left, top; z-index: 2;">
+    <img src="{{ tagImg }}" alt="" style="width: 340px; aspect-ratio: 3/2; object-fit: cover; display: block;">
+    <div style="margin-top: 14px; font-size: 16px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300; white-space: nowrap;">[{{ tagLabel }}]</div>
+  </div>
+  <h1 style="position: absolute; bottom: 6%; left: 0; right: 0; margin: 0; font-weight: 200; text-transform: uppercase; line-height: 0.98; letter-spacing: 0.01em; font-size: clamp(58px, 6.6vw, 128px); padding: 0 40px; pointer-events: none;">
+    <span style="display: block; text-align: left;">I design products,</span>
+    <span style="display: block; text-align: right;">websites &amp; agents</span>
+  </h1>
+  <div style="position: absolute; bottom: 4%; left: 40px; font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300;">Danisha Mehta — RCA</div>
+  <div style="position: absolute; bottom: 4%; left: 33%; font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300;">London — {{ clock }}</div>
+</section>
+
+<section id="services" data-screen-label="Services" style="max-width: 1600px; margin: 0 auto; padding: 130px 40px 40px;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 30px; flex-wrap: wrap; border-top: 1px dashed #b5b3ad; padding-top: 34px;">
+    <h2 style="margin: 0; font-weight: 200; font-size: clamp(44px, 4.2vw, 76px); text-transform: uppercase; letter-spacing: 0.03em;">What I take on</h2>
+    <div style="font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">Freelance &amp; contract · London / remote</div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 44px;">
+    <sc-for list="{{ services }}" as="sv" hint-placeholder-count="3">
+      <div onClick="{{ sv.select }}" style="cursor: pointer; background: {{ sv.bg }}; color: {{ sv.color }}; padding: 40px 36px 36px; display: flex; flex-direction: column; gap: 22px; min-height: 400px; transition: background 0.35s, color 0.35s, transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s;" style-hover="background: #111; color: #f0efec; transform: translateY(-8px); box-shadow: 0 30px 60px rgba(0,0,0,0.18);">
+        <div style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; opacity: 0.7;">{{ sv.index }}</div>
+        <h3 style="margin: 0; font-weight: 200; font-size: clamp(30px, 2.5vw, 44px); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.05;">{{ sv.title }}</h3>
+        <p style="margin: 0; font-size: 17px; font-weight: 300; line-height: 1.6; opacity: 0.85; text-wrap: pretty;">{{ sv.blurb }}</p>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+          <sc-for list="{{ sv.items }}" as="it" hint-placeholder-count="4">
+            <div style="font-size: 15px; font-weight: 300; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75;">{{ it.t }}</div>
+          </sc-for>
+        </div>
+        <div style="margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300;">
+          <span>[{{ sv.cta }}]</span><span style="opacity: 0.6;">{{ sv.count }}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="work" data-screen-label="Work" ref="{{ workRef }}" style="position: relative; height: {{ workHeight }}; background: #08080a; color: #f0efec; margin-top: 120px;">
+  <div style="position: sticky; top: 0; height: 100vh; min-height: 760px; overflow: hidden; display: flex; flex-direction: column;">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 26px 40px 20px; border-bottom: 1px solid #1e1e22; flex: 0 0 auto;">
+      <div style="display: flex; gap: 8px;">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+          <div onClick="{{ f.select }}" style="cursor: pointer; padding: 11px 20px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; border: 1px solid {{ f.border }}; background: {{ f.bg }}; color: {{ f.color }}; transition: background 0.25s, color 0.25s;">{{ f.label }}</div>
+        </sc-for>
+      </div>
+      <div style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; color: #6e6e73;">Scroll — {{ workCounter }}</div>
+    </div>
+    <div style="flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1.45fr 1fr;">
+      <div style="position: relative; overflow: hidden;">
+        <sc-for list="{{ visible }}" as="p" hint-placeholder-count="4">
+          <div ref="{{ p.ref }}" onClick="{{ p.open }}" style="position: absolute; left: 8%; top: 8%; width: 84%; height: 84%; cursor: pointer; box-shadow: 0 40px 80px rgba(0,0,0,0.45); background: #141416; overflow: hidden; will-change: transform, opacity;">
+            <sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ p.shot }}" alt="{{ p.name }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+            </sc-if>
+            <sc-if value="{{ p.showArryMock }}" hint-placeholder-val="{{ false }}">
+              <dc-import name="ArryBarry Site Mock" variant="card" hint-size="100%,100%" style="position: absolute; inset: 0;"></dc-import>
+            </sc-if>
+            <sc-if value="{{ p.showAgentMock }}" hint-placeholder-val="{{ false }}">
+              <dc-import name="Agent Mock" variant="card" agent="{{ p.agent }}" hint-size="100%,100%" style="position: absolute; inset: 0;"></dc-import>
+            </sc-if>
+            <sc-if value="{{ p.showPanel }}" hint-placeholder-val="{{ false }}">
+              <div style="box-sizing: border-box; position: absolute; inset: 0; background: #101014; color: #f0efec; padding: 44px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div style="font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: #d1310f;">{{ p.stack }}</div>
+                <div style="font-weight: 100; font-size: 66px; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.01em;">{{ p.name }}</div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                  <sc-for list="{{ p.tags }}" as="tg" hint-placeholder-count="3">
+                    <div style="border-top: 1px dashed #3a3a40; padding-top: 10px; font-size: 15px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; color: #9a9a9e;">{{ tg.t }}</div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <div style="box-sizing: border-box; padding: 60px 50px; display: flex; flex-direction: column; gap: 26px; overflow-y: auto; min-height: 0;">
+        <div style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; color: #d1310f;">{{ activeCat }}</div>
+        <div style="display: flex; align-items: flex-start; gap: 14px;">
+          <h2 style="margin: 0; font-weight: 100; font-size: clamp(46px, 3.8vw, 74px); text-transform: uppercase; letter-spacing: 0.04em; line-height: 1;">{{ activeName }}</h2>
+          <span onClick="{{ openActive }}" style="font-size: 15px; font-weight: 300; letter-spacing: 0.1em; margin-top: 8px; color: #8b8b90; cursor: pointer;" style-hover="color: #f0efec;">[OPEN]</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: #9a9a9e;">
+          <span>{{ activeStack }}</span>
+          <span>Role: {{ activeRole }}</span>
+        </div>
+        <p style="margin: 0; font-size: 17px; font-weight: 300; line-height: 1.6; color: #c7c7ca; max-width: 440px; text-wrap: pretty;">{{ activeDesc }}</p>
+        <div onClick="{{ openActive }}" style="margin-top: auto; cursor: pointer; align-self: flex-start; border: 1px solid #45454a; padding: 14px 24px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; color: #f0efec;" style-hover="border-color: #f0efec;">Open case study</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="More Work" style="background: #08080a; color: #f0efec; padding: 120px 40px 140px;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 50px; gap: 30px; flex-wrap: wrap;">
+    <h2 style="margin: 0; font-weight: 100; font-size: clamp(46px, 4.2vw, 76px); text-transform: uppercase; letter-spacing: 0.04em;">More work</h2>
+    <div style="font-size: 15px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: #9a9a9e;">Studies, craft and earlier projects</div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px 28px;">
+    <sc-for list="{{ moreWork }}" as="pg" hint-placeholder-count="7">
+      <div onClick="{{ pg.open }}" style="display: flex; flex-direction: column; gap: 13px; cursor: pointer;" style-hover="opacity: 0.85;">
+        <div style="overflow: hidden; aspect-ratio: 4/3; background: #141416;">
+          <sc-if value="{{ pg.shot }}" hint-placeholder-val="{{ false }}">
+            <img src="{{ pg.shot }}" alt="{{ pg.name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);" style-hover="transform: scale(1.05);">
+          </sc-if>
+        </div>
+        <div style="font-size: 17px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase;">{{ pg.name }}</div>
+        <div style="font-size: 14px; font-weight: 300; color: #9a9a9e; line-height: 1.5;">{{ pg.desc }}</div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="skills" data-screen-label="Skills" style="max-width: 1600px; margin: 0 auto; padding: 140px 40px 0;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 30px; flex-wrap: wrap; border-top: 1px dashed #b5b3ad; padding-top: 34px;">
+    <h2 style="margin: 0; font-weight: 200; font-size: clamp(44px, 4.2vw, 76px); text-transform: uppercase; letter-spacing: 0.03em;">How I work, technically</h2>
+    <div style="font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">Design → build → automate</div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px 50px; margin-top: 50px;">
+    <sc-for list="{{ practices }}" as="pr" hint-placeholder-count="3">
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <h3 style="margin: 0; font-weight: 300; font-size: 26px; text-transform: uppercase; letter-spacing: 0.06em;">{{ pr.h }}</h3>
+        <p style="margin: 0; font-size: 17px; font-weight: 300; line-height: 1.65; color: #3c3b38; text-wrap: pretty;">{{ pr.t }}</p>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display: flex; flex-direction: column; margin-top: 90px;">
+    <sc-for list="{{ skillGroups }}" as="g" hint-placeholder-count="6">
+      <div style="display: grid; grid-template-columns: 300px 1fr; gap: 40px; border-top: 1px dashed #b5b3ad; padding: 26px 0; align-items: baseline;">
+        <h3 style="margin: 0; font-weight: 300; font-size: 22px; text-transform: uppercase; letter-spacing: 0.08em;">{{ g.h }}</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <sc-for list="{{ g.items }}" as="s" hint-placeholder-count="6">
+            <span style="border: 1px solid #cfcdc7; padding: 9px 15px; font-size: 15px; font-weight: 300; letter-spacing: 0.04em;">{{ s.t }}</span>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="about" data-screen-label="About" style="max-width: 1600px; margin: 0 auto; padding: 140px 40px 0; display: grid; grid-template-columns: 1.4fr 1fr; gap: 80px; align-items: center;">
+  <div>
+    <p style="margin: 0; font-size: clamp(24px, 2.1vw, 36px); font-weight: 300; line-height: 1.45; text-wrap: pretty;">I am Danisha Mehta — a Product Design graduate of the Royal College of Art who now spends as much time in code and automation as in CAD. I design the thing, build the thing, and wire up the agents that keep it running: storefronts, interfaces, and the workflows behind them.</p>
+    <div style="margin-top: 28px; font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300; color: #6f6d67; line-height: 1.9;">Emerging Designer of the Year 2024, Jaipur Design Festival · Finalist, OPPO×RCA 2022 · Exhibited, London Design Festival 2022 · Gold Medalist, Nirma University</div>
+    <a href="mailto:danishamehta@gmail.com" style="display: inline-block; margin-top: 36px; font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300;">[Email me]</a>
+  </div>
+  <img src="https://static.wixstatic.com/media/a8a034_75001b8a8cbb4f0d922fb051dd08af6d~mv2.jpg/v1/fill/w_700,h_875,al_c,q_85,enc_avif,quality_auto/IMG_4949_JPG.jpg" alt="Danisha Mehta" style="width: 100%; aspect-ratio: 4/5; object-fit: cover;">
+</section>
+
+<section id="experience" data-screen-label="Experience" style="max-width: 1600px; margin: 0 auto; padding: 140px 40px 120px;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 30px; gap: 30px; flex-wrap: wrap; border-top: 1px dashed #b5b3ad; padding-top: 34px;">
+    <h2 style="margin: 0; font-weight: 200; font-size: clamp(44px, 4.2vw, 76px); text-transform: uppercase; letter-spacing: 0.03em;">Experience</h2>
+    <div style="font-size: 15px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: #6f6d67;">2014 — present</div>
+  </div>
+  <div style="display: flex; flex-direction: column;">
+    <sc-for list="{{ experience }}" as="e" hint-placeholder-count="8">
+      <div style="display: grid; grid-template-columns: 230px 1fr 1fr; gap: 24px; align-items: baseline; padding: 20px 0; border-top: 1px dashed #cfcdc7; font-weight: 300;">
+        <div style="font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #6f6d67;">{{ e.dates }}</div>
+        <div style="font-size: 21px; letter-spacing: 0.05em; text-transform: uppercase;">{{ e.org }}</div>
+        <div style="font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: #6f6d67; text-align: right;">{{ e.role }}</div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<footer id="contact" data-screen-label="Footer" style="background: #08080a; color: #f0efec; padding: 120px 40px 40px;">
+  <a href="mailto:danishamehta@gmail.com" style="display: block; text-align: center; font-weight: 100; font-size: clamp(56px, 6.6vw, 124px); text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.05; color: #f0efec;" style-hover="color: #d1310f;">Let's work together <span style="font-size: 0.28em; vertical-align: super; font-weight: 300; letter-spacing: 0.1em;">[email me]</span></a>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 110px; font-size: 15px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; color: #9a9a9e; flex-wrap: wrap; gap: 20px;">
+    <nav style="display: flex; gap: 24px;">
+      <a href="#top" style="color: #9a9a9e;" style-hover="color: #f0efec;">Home</a>
+      <a href="#services" style="color: #9a9a9e;" style-hover="color: #f0efec;">Services</a>
+      <a href="#work" style="color: #9a9a9e;" style-hover="color: #f0efec;">Work</a>
+      <a href="#skills" style="color: #9a9a9e;" style-hover="color: #f0efec;">Skills</a>
+      <a href="#experience" style="color: #9a9a9e;" style-hover="color: #f0efec;">Experience</a>
+      <a href="#about" style="color: #9a9a9e;" style-hover="color: #f0efec;">About</a>
+    </nav>
+    <a href="mailto:danishamehta@gmail.com" style="color: #9a9a9e; text-transform: none;" style-hover="color: #f0efec;">danishamehta@gmail.com</a>
+    <div style="display: flex; gap: 24px; align-items: center;">
+      <a href="http://linkedin.com/in/danisha-mehta-9488b4183" target="_blank" rel="noopener" style="color: #9a9a9e;" style-hover="color: #f0efec;">LinkedIn</a>
+      <a href="http://be.net/danishamehta14" target="_blank" rel="noopener" style="color: #9a9a9e;" style-hover="color: #f0efec;">Behance</a>
+      <span>LDN — {{ clockFull }}</span>
+    </div>
+  </div>
+</footer>
+
+<sc-if value="{{ pageOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position: fixed; inset: 0; z-index: 85; background: #f0efec; color: #111; overflow-y: auto; animation: fadeUp 0.35s ease both;">
+    <div style="position: sticky; top: 0; z-index: 5; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 30px; padding: 15px 40px; box-sizing: border-box; background: rgba(240,239,236,0.6); backdrop-filter: blur(22px) saturate(1.7); -webkit-backdrop-filter: blur(22px) saturate(1.7); border-bottom: 1px solid rgba(17,17,17,0.08);">
+      <a href="#top" onClick="{{ goHome }}" style="justify-self: start; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; color: #111;" style-hover="color: #d1310f;">DM</a>
+      <nav style="justify-self: center; display: flex; gap: 28px;">
+        <sc-for list="{{ headerNav }}" as="h" hint-placeholder-count="6">
+          <a href="{{ h.href }}" onClick="{{ h.onClick }}" style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; color: #46443f;" style-hover="color: #d1310f;">{{ h.label }}</a>
+        </sc-for>
+      </nav>
+      <div onClick="{{ closePage }}" style="justify-self: end; cursor: pointer; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300;">[Close]</div>
+    </div>
+
+    <div style="max-width: 1500px; margin: 0 auto; padding: 60px 40px 0;">
+      <div style="font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 300; color: #8a887f;">{{ page.eyebrow }}</div>
+      <h1 style="margin: 18px 0 0; font-weight: 100; font-size: clamp(60px, 7vw, 140px); text-transform: uppercase; letter-spacing: 0.02em; line-height: 0.98;">{{ page.title }}</h1>
+      <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 60px; margin-top: 46px; align-items: start;">
+        <p style="margin: 0; font-size: clamp(22px, 1.9vw, 32px); font-weight: 300; line-height: 1.5; text-wrap: pretty;">{{ page.lede }}</p>
+        <sc-if value="{{ pageHasPhoto }}" hint-placeholder-val="{{ false }}">
+          <img src="{{ page.photo }}" alt="" style="width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block;">
+        </sc-if>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 64px;">
+        <sc-for list="{{ pageMeta }}" as="m" hint-placeholder-count="4">
+          <div style="border-top: 1px dashed #b5b3ad; padding-top: 18px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">{{ m.label }}</div>
+            <div style="font-size: 17px; font-weight: 300; line-height: 1.6;">{{ m.value }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ pageHasGrid }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top: 110px;">
+          <h2 style="margin: 0; font-weight: 200; font-size: clamp(34px, 3vw, 56px); text-transform: uppercase; letter-spacing: 0.03em; border-top: 1px dashed #b5b3ad; padding-top: 34px;">{{ page.gridTitle }}</h2>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 36px;">
+            <sc-for list="{{ pageGrid }}" as="g" hint-placeholder-count="3">
+              <div style="background: #e9e7e2; padding: 36px 32px; display: flex; flex-direction: column; gap: 18px; transition: background 0.35s, color 0.35s, transform 0.35s cubic-bezier(0.22,1,0.36,1);" style-hover="background: #111; color: #f0efec; transform: translateY(-6px);">
+                <div style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; opacity: 0.65;">{{ g.n }}</div>
+                <h3 style="margin: 0; font-weight: 200; font-size: 30px; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.1;">{{ g.h }}</h3>
+                <p style="margin: 0; font-size: 17px; font-weight: 300; line-height: 1.6; opacity: 0.9; text-wrap: pretty;">{{ g.t }}</p>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+                  <sc-for list="{{ g.items }}" as="gi" hint-placeholder-count="0">
+                    <div style="font-size: 15px; font-weight: 300; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75;">{{ gi.t }}</div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pageHasSteps }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top: 110px;">
+          <h2 style="margin: 0; font-weight: 200; font-size: clamp(34px, 3vw, 56px); text-transform: uppercase; letter-spacing: 0.03em; border-top: 1px dashed #b5b3ad; padding-top: 34px;">{{ page.stepsTitle }}</h2>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px 30px; margin-top: 40px;">
+            <sc-for list="{{ pageSteps }}" as="st" hint-placeholder-count="4">
+              <div style="display: flex; flex-direction: column; gap: 14px; border-top: 2px solid #111; padding-top: 16px;">
+                <div style="font-size: 13px; letter-spacing: 0.14em; font-weight: 300; color: #6f6d67;">{{ st.n }}</div>
+                <h3 style="margin: 0; font-weight: 300; font-size: 22px; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.2;">{{ st.h }}</h3>
+                <p style="margin: 0; font-size: 16px; font-weight: 300; line-height: 1.65; color: #3c3b38; text-wrap: pretty;">{{ st.t }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pageHasProjectGroups }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 80px; margin-top: 110px;">
+          <sc-for list="{{ pageProjectGroups }}" as="pgg" hint-placeholder-count="3">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed #b5b3ad; padding-top: 30px; gap: 24px; flex-wrap: wrap;">
+                <h2 style="margin: 0; font-weight: 200; font-size: clamp(30px, 2.6vw, 48px); text-transform: uppercase; letter-spacing: 0.03em;">{{ pgg.h }}</h2>
+                <div style="font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">{{ pgg.note }}</div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px 26px; margin-top: 32px;">
+                <sc-for list="{{ pgg.items }}" as="pi" hint-placeholder-count="4">
+                  <div onClick="{{ pi.open }}" style="display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
+                    <div style="overflow: hidden; aspect-ratio: 4/3; background: #e2e0da;">
+                      <sc-if value="{{ pi.hasShot }}" hint-placeholder-val="{{ true }}">
+                        <img src="{{ pi.shot }}" alt="{{ pi.name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);" style-hover="transform: scale(1.06);">
+                      </sc-if>
+                      <sc-if value="{{ pi.noShot }}" hint-placeholder-val="{{ false }}">
+                        <div style="box-sizing: border-box; width: 100%; height: 100%; background: #101014; color: #f0efec; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transition: background 0.35s;" style-hover="background: #d1310f;">
+                          <div style="font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; opacity: 0.7;">{{ pi.cat }}</div>
+                          <div style="font-weight: 100; font-size: 30px; line-height: 1; text-transform: uppercase; letter-spacing: 0.02em;">{{ pi.name }}</div>
+                        </div>
+                      </sc-if>
+                    </div>
+                    <div style="font-size: 17px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase;">{{ pi.name }}</div>
+                    <div style="font-size: 14px; font-weight: 300; color: #6f6d67; line-height: 1.5;">{{ pi.stack }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pageHasChips }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; margin-top: 110px;">
+          <sc-for list="{{ pageChips }}" as="cg" hint-placeholder-count="6">
+            <div style="display: grid; grid-template-columns: 300px 1fr; gap: 40px; border-top: 1px dashed #b5b3ad; padding: 26px 0; align-items: baseline;">
+              <h3 style="margin: 0; font-weight: 300; font-size: 22px; text-transform: uppercase; letter-spacing: 0.08em;">{{ cg.h }}</h3>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <sc-for list="{{ cg.items }}" as="ci" hint-placeholder-count="6">
+                  <span style="border: 1px solid #cfcdc7; padding: 9px 15px; font-size: 15px; font-weight: 300; letter-spacing: 0.04em; transition: background 0.25s, color 0.25s;" style-hover="background: #111; color: #f0efec;">{{ ci.t }}</span>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pageHasRows }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top: 110px;">
+          <h2 style="margin: 0; font-weight: 200; font-size: clamp(34px, 3vw, 56px); text-transform: uppercase; letter-spacing: 0.03em; border-top: 1px dashed #b5b3ad; padding-top: 34px;">{{ page.rowsTitle }}</h2>
+          <div style="display: flex; flex-direction: column; margin-top: 26px;">
+            <sc-for list="{{ pageRows }}" as="r" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 230px 1fr 1fr; gap: 24px; align-items: baseline; padding: 20px 0; border-top: 1px dashed #cfcdc7; font-weight: 300;">
+                <div style="font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #6f6d67;">{{ r.a }}</div>
+                <div style="font-size: 21px; letter-spacing: 0.05em; text-transform: uppercase;">{{ r.b }}</div>
+                <div style="font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: #6f6d67; text-align: right;">{{ r.c }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pageHasBlocks }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 60px; margin-top: 110px;">
+          <sc-for list="{{ pageBlocks }}" as="b" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: 340px 1fr; gap: 40px; border-top: 1px dashed #b5b3ad; padding-top: 34px;">
+              <h3 style="margin: 0; font-weight: 300; font-size: 24px; text-transform: uppercase; letter-spacing: 0.08em;">{{ b.h }}</h3>
+              <p style="margin: 0; font-size: 18px; font-weight: 300; line-height: 1.7; color: #3c3b38; max-width: 820px; text-wrap: pretty;">{{ b.t }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <div style="border-top: 1px dashed #b5b3ad; margin-top: 110px; padding: 40px 0 90px; display: flex; justify-content: space-between; align-items: baseline; gap: 30px; flex-wrap: wrap;">
+        <div style="font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">{{ page.ctaNote }}</div>
+        <a href="mailto:danishamehta@gmail.com" style="font-weight: 100; font-size: clamp(40px, 4.2vw, 76px); text-transform: uppercase; letter-spacing: 0.04em;">Email me →</a>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position: fixed; inset: 0; z-index: 90; background: #f0efec; color: #111; overflow-y: auto; animation: fadeUp 0.35s ease both;">
+    <div style="position: sticky; top: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; box-sizing: border-box; background: rgba(240,239,236,0.6); backdrop-filter: blur(22px) saturate(1.7); -webkit-backdrop-filter: blur(22px) saturate(1.7); border-bottom: 1px solid rgba(17,17,17,0.08); color: #111;">
+      <a href="#top" onClick="{{ goHome }}" style="font-weight: 600; font-size: 22px; letter-spacing: 0.04em; color: #111;" style-hover="color: #d1310f;">DM</a>
+      <div onClick="{{ closeDetail }}" style="cursor: pointer; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300;">[Close]</div>
+    </div>
+
+    <sc-if value="{{ detailIsSenseit }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top: -90px;">
+        <dc-import name="SenseIT Case Study" hint-size="100%,2400px"></dc-import>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ detailGeneric }}" hint-placeholder-val="{{ true }}">
+      <div style="padding: 0 40px; margin-top: -90px;">
+        <sc-if value="{{ detailHeroImg }}" hint-placeholder-val="{{ true }}">
+          <img src="{{ detail.hero }}" alt="{{ detail.name }}" style="width: 100%; height: 64vh; object-fit: cover; display: block;">
+        </sc-if>
+        <sc-if value="{{ detailIsArry }}" hint-placeholder-val="{{ false }}">
+          <div style="width: 100%; aspect-ratio: 1200/820; overflow: hidden; background: #fff; position: relative;">
+            <dc-import name="ArryBarry Site Mock" variant="site" hint-size="100%,100%" style="position: absolute; inset: 0;"></dc-import>
+          </div>
+        </sc-if>
+        <sc-if value="{{ detailIsAgent }}" hint-placeholder-val="{{ false }}">
+          <div style="width: 100%; height: 70vh; min-height: 560px; position: relative; background: #f0efec;">
+            <dc-import name="Agent Mock" variant="{{ detail.agent }}" agent="{{ detail.agent }}" hint-size="100%,100%" style="position: absolute; inset: 0;"></dc-import>
+          </div>
+          <div style="margin-top: 14px; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">Live demo — click through it</div>
+        </sc-if>
+        <sc-if value="{{ detailIsType }}" hint-placeholder-val="{{ false }}">
+          <div style="width: 100%; height: 56vh; min-height: 420px; background: #101014; color: #f0efec; padding: 60px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: #d1310f;">{{ detail.stack }}</div>
+            <div style="font-weight: 100; font-size: clamp(70px, 8vw, 150px); line-height: 0.92; text-transform: uppercase;">{{ detail.name }}</div>
+            <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+              <sc-for list="{{ detailTags }}" as="tg" hint-placeholder-count="3">
+                <div style="font-size: 16px; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: #9a9a9e;">{{ tg.t }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="max-width: 1500px; margin: 0 auto; padding: 70px 40px 0;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; flex-wrap: wrap;">
+          <h1 style="margin: 0; font-weight: 100; font-size: clamp(60px, 6.6vw, 132px); text-transform: uppercase; letter-spacing: 0.03em; line-height: 1;">{{ detail.name }}</h1>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 15px; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: #6f6d67; margin-top: 14px; text-align: right;">
+            <span>{{ detail.stack }}</span>
+            <span>Role: {{ detail.role }}</span>
+            <span>{{ detail.credit }}</span>
+          </div>
+        </div>
+        <p style="margin: 46px 0 0; font-size: clamp(22px, 1.9vw, 32px); font-weight: 300; line-height: 1.5; max-width: 940px; text-wrap: pretty;">{{ detail.desc }}</p>
+        <sc-if value="{{ detailHasSpecs }}" hint-placeholder-val="{{ true }}">
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 56px;">
+            <sc-for list="{{ detailSpecs }}" as="sp" hint-placeholder-count="4">
+              <div style="border-top: 1px dashed #b5b3ad; padding-top: 18px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">{{ sp.label }}</div>
+                <div style="font-size: 17px; font-weight: 300; line-height: 1.6;">{{ sp.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ detailHasJourney }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 100px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed #b5b3ad; padding-top: 34px; gap: 30px; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-weight: 200; font-size: clamp(36px, 3.2vw, 58px); text-transform: uppercase; letter-spacing: 0.03em;">{{ journeyTitle }}</h2>
+              <div style="display: flex; align-items: center; gap: 22px; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300;">
+                <span onClick="{{ prevJourney }}" style="cursor: pointer;">[Prev]</span>
+                <span style="color: #6f6d67;">{{ journeyCounter }}</span>
+                <span onClick="{{ nextJourney }}" style="cursor: pointer;">[Next]</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+              <sc-for list="{{ journeyTabs }}" as="jt" hint-placeholder-count="4">
+                <div onClick="{{ jt.select }}" style="cursor: pointer; flex: 1 1 0; border-top: 2px solid {{ jt.rail }}; padding-top: 12px; display: flex; flex-direction: column; gap: 4px; color: {{ jt.color }};">
+                  <span style="font-size: 12px; letter-spacing: 0.12em; font-weight: 300;">{{ jt.num }}</span>
+                  <span style="font-size: 15px; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.25;">{{ jt.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div ref="{{ jTrackRef }}" onScroll="{{ onJourneyScroll }}" style="display: flex; gap: 32px; margin-top: 34px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 10px;">
+              <sc-for list="{{ journeyCards }}" as="jc" hint-placeholder-count="4">
+                <div style="flex: 0 0 68%; scroll-snap-align: center; display: flex; flex-direction: column; gap: 18px; opacity: {{ jc.opacity }}; transition: opacity 0.4s;">
+                  <img src="{{ jc.img }}" alt="{{ jc.label }}" style="width: 100%; aspect-ratio: 16/9; object-fit: contain; background: #e6e4de; display: block;">
+                  <div style="display: flex; gap: 18px; align-items: baseline;">
+                    <span style="font-size: 13px; letter-spacing: 0.12em; font-weight: 300; color: #6f6d67;">{{ jc.num }}</span>
+                    <span style="font-size: 22px; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase;">{{ jc.label }}</span>
+                  </div>
+                  <p style="margin: 0; font-size: 18px; font-weight: 300; line-height: 1.65; color: #3c3b38; text-wrap: pretty;">{{ jc.text }}</p>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="display: flex; flex-direction: column; gap: 60px; margin-top: 100px;">
+          <sc-for list="{{ detailSections }}" as="sec" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: 340px 1fr; gap: 40px; border-top: 1px dashed #b5b3ad; padding-top: 34px;">
+              <h3 style="margin: 0; font-weight: 300; font-size: 24px; text-transform: uppercase; letter-spacing: 0.08em;">{{ sec.h }}</h3>
+              <p style="margin: 0; font-size: 18px; font-weight: 300; line-height: 1.7; color: #3c3b38; max-width: 820px; text-wrap: pretty;">{{ sec.t }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ detailIsArry }}" hint-placeholder-val="{{ false }}">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; margin-top: 90px;">
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="aspect-ratio: 4/3; overflow: hidden; background: #fff; position: relative;"><dc-import name="ArryBarry Site Mock" variant="product" hint-size="100%,100%" style="position: absolute; inset: 0;"></dc-import></div>
+              <div style="font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">Product template — donation value and tier discount resolved from live data</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="aspect-ratio: 4/3; overflow: hidden; background: #fff; position: relative;"><dc-import name="ArryBarry Site Mock" variant="impact" hint-size="100%,100%" style="position: absolute; inset: 0;"></dc-import></div>
+              <div style="font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300; color: #6f6d67;">Impact Bar component — rolling 90-day window and tier state</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ detailHasGallery }}" hint-placeholder-val="{{ false }}">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; margin-top: 90px;">
+            <sc-for list="{{ detailGallery }}" as="g" hint-placeholder-count="2">
+              <img src="{{ g.img }}" alt="" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;">
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ detailHasResources }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 100px;">
+            <h2 style="margin: 0; font-weight: 200; font-size: clamp(36px, 3.2vw, 58px); text-transform: uppercase; letter-spacing: 0.03em; border-top: 1px dashed #b5b3ad; padding-top: 34px;">Resources</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 30px;">
+              <sc-for list="{{ detailResources }}" as="r" hint-placeholder-count="3">
+                <a href="{{ r.href }}" target="_blank" rel="noopener" style="display: flex; flex-direction: column; gap: 12px; padding: 30px; background: #e9e7e2; color: #111; min-height: 150px;" style-hover="background: #111; color: #f0efec;">
+                  <span style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; opacity: 0.7;">{{ r.kind }}</span>
+                  <span style="font-size: 22px; font-weight: 300; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.2;">{{ r.label }}</span>
+                  <span style="font-size: 15px; font-weight: 300; line-height: 1.5; opacity: 0.75; margin-top: auto;">{{ r.note }}</span>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <div style="max-width: 1500px; margin: 0 auto; padding: 0 40px;">
+      <div onClick="{{ openNext }}" style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed #b5b3ad; margin-top: 110px; padding: 34px 0 80px; cursor: pointer;" style-hover="color: #d1310f;">
+        <span style="font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300;">Next project</span>
+        <span style="font-weight: 100; font-size: clamp(40px, 4.2vw, 76px); text-transform: uppercase; letter-spacing: 0.04em;">{{ nextName }} →</span>
+      </div>
+    </div>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;tagCycleSeconds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:4.5,&quot;min&quot;:1,&quot;max&quot;:6,&quot;step&quot;:0.5,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Hero&quot;}}">
+class Component extends DCLogic {
+  state = { menuOpen: false, tagIndex: 0, hoverNav: 0, now: new Date(), active: 0, detailIdx: null, filter: 'Product', jstep: 0, page: null };
+  _wp = 0;
+  _cards = [];
+  _applyCards() {
+    const n = this._visibleCount || 0;
+    for (let i = 0; i < n; i++) {
+      const el = this._cards[i];
+      if (!el) continue;
+      const d = i - this._wp, ad = Math.abs(d);
+      el.style.transform = 'translate3d(' + (-ad * 5).toFixed(2) + '%, ' + (d * 62).toFixed(2) + '%, 0) scale(' + Math.max(0.6, 1 - ad * 0.14).toFixed(3) + ') rotate(' + (d * 3).toFixed(2) + 'deg)';
+      el.style.opacity = Math.max(0, Math.min(1, 1.2 - ad * 0.7)).toFixed(2);
+      el.style.zIndex = String(20 - Math.round(ad * 4));
+    }
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.tagCycleSeconds !== this.props.tagCycleSeconds) this._startTagCycle();
+    this._applyCards();
+  }
+  componentDidMount() {
+    this._clock = setInterval(() => this.setState({ now: new Date() }), 1000);
+    this._startTagCycle();
+    this._targetWp = 0;
+    this._onScroll = () => {
+      const el = this._workEl;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const total = r.height - window.innerHeight;
+      const n = Math.max(1, this._visibleCount - 1);
+      this._targetWp = Math.min(1, Math.max(0, -r.top / total)) * n;
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    this._onScroll();
+    this._mx = null; this._cx = null;
+    this._followRaf = requestAnimationFrame(this._follow = () => {
+      const el = this._heroImg;
+      if (el && this._mx != null) {
+        if (this._cx == null) { this._cx = this._mx; this._cy = this._my; }
+        this._cx += (this._mx - this._cx) * 0.08;
+        this._cy += (this._my - this._cy) * 0.08;
+        el.style.left = this._cx + 'px';
+        el.style.top = this._cy + 'px';
+        if (this._vLine) this._vLine.style.left = this._cx + 'px';
+        if (this._hLine) this._hLine.style.top = this._cy + 'px';
+      }
+      const gap = this._targetWp - this._wp;
+      if (Math.abs(gap) > 0.0008) {
+        this._wp += gap * 0.09;
+        this._applyCards();
+        const n = Math.max(1, this._visibleCount);
+        const a = Math.min(n - 1, Math.max(0, Math.round(this._wp)));
+        if (a !== this.state.active) this.setState({ active: a });
+      }
+      this._followRaf = requestAnimationFrame(this._follow);
+    });
+    this._applyCards();
+  }
+  _startTagCycle() {
+    clearInterval(this._tag);
+    const speed = (this.props.tagCycleSeconds ?? 4.5) * 1000;
+    this._tag = setInterval(() => this.setState(s => ({ tagIndex: (s.tagIndex + 1) % 4 })), speed);
+  }
+  componentWillUnmount() {
+    clearInterval(this._clock); clearInterval(this._tag);
+    window.removeEventListener('scroll', this._onScroll);
+    cancelAnimationFrame(this._followRaf);
+  }
+  _goJourney(i) {
+    this.setState({ jstep: i });
+    const t = this._jTrack;
+    if (!t || !t.children[i]) return;
+    const k = t.children[i];
+    t.scrollTo({ left: k.offsetLeft - (t.clientWidth - k.offsetWidth) / 2, behavior: 'smooth' });
+  }
+  _data() {
+    const W = 'https://static.wixstatic.com/media/';
+    const im = (id, w, h, crop) => W + id + '/v1/' + (crop ? crop + '/' : '') + 'fill/w_' + w + ',h_' + h + ',al_c,q_88,enc_avif,quality_auto/img.' + (id.indexOf('.png') > -1 ? 'png' : 'jpg');
+    const featured = [
+      { name: 'SenseIT', cat: 'Product', senseit: true, kind: 'img',
+        stack: 'OPPO×RCA · Inclusive tech', role: 'Product design & research', credit: 'With Yannick Ewertz · 2022',
+        desc: 'A tactile system that lets a visually impaired person navigate what is on screen and type back, without listening through a voice assistant. Exhibited at the London Design Festival 2022.',
+        shot: W + 'ee9626_ac5026a88c0349e2b368b6ee8a56165b~mv2.jpg/v1/crop/x_0,y_137,w_2560,h_1523/fill/w_1400,h_830,al_c,q_88,enc_avif,quality_auto/Keyboard_53.jpg' },
+      { name: 'Packaging Design', cat: 'Product', kind: 'img',
+        stack: 'Structural & graphic packaging', role: 'Product design, solo', credit: 'Nirma University · 2020',
+        desc: 'A shuttlecock tube redesigned around what badminton players actually struggle with: a tube too long to handle, a lid too tight to open, no way to count what is left, and no way to humidify before practice.',
+        shot: im('a8a034_0f8ff7b185794e14b9036028fd1bced3~mv2.jpg', 1400, 1000, 'crop/x_0,y_180,w_2558,h_1825'),
+        hero: im('a8a034_0f8ff7b185794e14b9036028fd1bced3~mv2.jpg', 1920, 1000, 'crop/x_0,y_180,w_2558,h_1825'),
+        specs: [{ label: 'Category', value: 'Sports equipment packaging' }, { label: 'Year', value: '2020' }, { label: 'Method', value: 'Manufacturing study, user survey, mock-ups' }, { label: 'Output', value: '16-sided pack, humidifier core, surface graphics' }],
+        journeyTitle: 'Journey of the pack',
+        journey: [
+          { label: 'Manufacturing study', img: im('a8a034_4bb72148e4094b88928b1599d8ecc2a8~mv2.jpg', 1200, 900), text: 'Before drawing anything I learned how a shuttle is made: goose or duck feathers set into a cork tip, sixteen feathers of identical length, angles verified in a miniature wind tunnel, and colour strips marking speed. A feather tilted a fraction changes the shot — which is exactly why the packaging matters.' },
+          { label: 'User survey', img: im('a8a034_7628c5ed2360459ab69bbaddbd71cee9~mv2.png', 1400, 760, 'crop/x_45,y_42,w_1805,h_985'), text: 'Surveyed regular players rather than casual ones. The complaints were consistent and physical: the lid, the last two or three shuttles stuck down a long tube, and having no idea how many were left without tipping the whole thing out.' },
+          { label: 'Problem statement', img: im('a8a034_6c384a9c0e244f68a61f4232be45fffc~mv2.png', 1000, 990), text: 'Design an aesthetic pack for players who practise regularly and face four specific failures: handling the long tube, identifying how many shuttles are left, opening the lid, and humidifying the shuttles before play.' },
+          { label: 'Final concept', img: im('a8a034_8911ab8b4448437b9c3b79a16765819f~mv2.jpg', 1600, 860, 'crop/x_135,y_421,w_3198,h_1722'), text: 'A sixteen-sided body so every feather tip stays pointed, a transparent acrylic window so the count is visible, a two-way pack that dispenses from either end, a better cap grip, and a humidifier running through the middle with the colour code beside it.' },
+          { label: 'Technical drawings', img: im('a8a034_6e3573e088484ca887893d3b4779d073~mv2.png', 1400, 930, 'crop/x_168,y_179,w_1906,h_1280'), text: 'Sections and dimensions resolved against the real shuttle geometry — sixteen facets, the humidifier cavity, and the two-way closure detailed so it could actually be tooled.' },
+          { label: 'Surface graphics', img: im('a8a034_f7931283ccdc45dea40a41833b781547~mv2.png', 1400, 780), text: 'The surface layout closes the system: speed colour coding placed where the hand already looks, and a graphic language that survives being printed on a curved, faceted body.' },
+        ],
+        sections: [
+          { h: 'Why the tube fails', t: 'The standard tube is a manufacturing convenience, not a player’s object. It is long because shuttles stack; it is tight because it must not open in a bag; it is opaque because it is cheap. Every one of those decisions transfers a small daily cost onto the player.' },
+          { h: 'What changed', t: 'Faceting the body did two things at once — it stopped the feather tips from splaying and gave the hand something to hold. Making it openable from both ends removed the reach problem entirely, and the humidifier moved a separate pre-practice ritual inside the pack.' },
+        ] },
+      { name: 'Swoosh', cat: 'Product', kind: 'img',
+        stack: 'Toy design · Mechanical', role: 'Product design', credit: 'With Nirja Shiroya',
+        desc: 'A mechanical toy for three-to-five year olds, built from ball bearings and a magic-wheel drive — developed through three working prototypes and tested with a real five-year-old.',
+        shot: im('a8a034_7e726b3e41e64f6a8ce892a608bc7cab~mv2.jpg', 1400, 1000),
+        hero: im('a8a034_9f9e865942f04a849309f848c08a5bcc~mv2.jpg', 1920, 1100),
+        specs: [{ label: 'Users', value: 'Children aged 3–5' }, { label: 'Drive', value: 'Ball bearings + magic wheels' }, { label: 'Prototypes', value: 'Three, tested with users' }, { label: 'Material', value: 'Flexible plywood, MS pipe skeleton' }],
+        journeyTitle: 'Three prototypes',
+        journey: [
+          { label: 'What is a toy?', img: im('a8a034_67671de1640a4eb2865f7cf3165b90fd~mv2.png', 1400, 900), text: 'The brief asked for a simple mechanical toy that keeps a young child engaged in one activity. We started with the harder question — what is a toy, and what makes a child return to it — and profiled curious, physically active kids rather than designing for an average.' },
+          { label: 'Proof of concept', img: im('a8a034_24c17db0ac33497198a3152ea582d0e8~mv2.jpg', 1400, 900), text: 'The first mock-up welded our mechanism onto an existing product. Ugly, but it answered the only question that mattered at that point: does the motion work at all, and is it fun for more than a minute?' },
+          { label: 'Actual scale', img: im('a8a034_61c0b9cbfd8a42dda1520bc4565f8256~mv2.png', 1400, 900), text: 'A full-size MS-pipe skeleton, sized to a five-year-old and tested by one. Reach, seat height and the force needed to start the motion all came out of that session rather than a chart.' },
+          { label: 'Final build', img: im('a8a034_afd42c49e61c43ca813bf4995fe282b1~mv2.png', 1400, 900), text: 'Flexible plywood body, ball bearings for leg control, magic wheels driving the back-and-forth motion. The mechanism stays visible — children work out what makes it move, which is half the play.' },
+        ],
+        sections: [
+          { h: 'Designing the motion first', t: 'The toy is the motion; the body is packaging for it. Fixing the drive before the form meant every later decision — height, weight, where the hands go — served a movement we already knew was engaging.' },
+        ] },
+      { name: 'FIFI', cat: 'Product', kind: 'img',
+        stack: 'Smart toy · Arduino & IoT', role: 'Product & UX design', credit: 'With Hetvi Adalja',
+        desc: 'A glowing companion that runs away from toddlers. IR sensors on four sides, a Neopixel ring, and a companion app to set colour and movement — a chase built on the Tom & Jerry dynamic.',
+        shot: im('a8a034_f3633396872241879ae3e25f5696921a~mv2.jpg', 1400, 1000),
+        hero: im('a8a034_8536ad401a954401a7481415bce8b9a1~mv2.png', 1920, 1050),
+        specs: [{ label: 'Sensing', value: 'IR on four sides' }, { label: 'Light', value: 'Neopixel ring, app-controlled' }, { label: 'Build', value: '3D printed ABS, snap fits, lathe-verified' }, { label: 'App', value: 'Prototyped in Adobe XD' }],
+        journeyTitle: 'From dynamic to device',
+        journey: [
+          { label: 'The chase', img: im('a8a034_7895a88e04e145609746cd8a9c9c1808~mv2.jpg', 1400, 900), text: 'The insight was a relationship, not a feature: Tom never catches Jerry, and that is why the game never ends. IR sensors in four directions let FIFI notice an approaching child and move away — the toy initiates, the child responds.' },
+          { label: 'Memphis forms', img: im('a8a034_70145521e7114333afabc035e5c03ad0~mv2.jpg', 1400, 900), text: 'Form language drawn from the Memphis movement — simple geometry, bright and bold, raw but resolved. A sphere on a disc read as a creature without needing a face.' },
+          { label: 'Making it', img: im('a8a034_8536ad401a954401a7481415bce8b9a1~mv2.png', 1400, 900), text: 'Lathe-turned to verify dimensions, then 3D printed in ABS with snap fittings and spray finished. Motors, the Neopixel ring and batteries all pack into the base so the sphere stays clean.' },
+          { label: 'The app', img: im('a8a034_201cab9e56bc4b3aa3edb7f4994b636b~mv2.png', 1400, 900), text: 'Connected to an IoT server, the app sets colour and movement — a parent-facing surface for a child-facing object, prototyped in Adobe XD.' },
+        ],
+        sections: [
+          { h: 'Two audiences, one product', t: 'The toddler gets a creature; the parent gets a control panel. Keeping those separated — nothing configurable on the object itself — meant the play never got interrupted by an interface.' },
+        ] },
+      { name: 'ArryBarry', cat: 'Digital', kind: 'arry',
+        stack: 'Ecommerce platform · Design system · Agents', role: 'Web design, development & automation', credit: 'arrybarry.com · 2024—present',
+        desc: 'A health & beauty marketplace where the seller fee becomes a charity donation and customers unlock automatic discounts through an Impact Bar. Storefront, design system, onboarding tooling and the agents that fill the catalogue.',
+        specs: [
+          { label: 'Scope', value: 'Storefront UX, design system, brand & charity onboarding' },
+          { label: 'Build', value: 'Shopify custom Liquid, component library, metafields' },
+          { label: 'Systems', value: 'Donation engine, tiered discounts, referral attribution' },
+          { label: 'Agents', value: 'Listing copy and imagery generated from name + EAN' },
+        ],
+        sections: [
+          { h: 'The problem', t: 'Marketplaces take 6–45% in fees. ArryBarry donates its seller fee instead — so the shopping experience has to make an invisible financial mechanism feel concrete at every step, without slowing anyone down or reading as a charity site.' },
+          { h: 'Information architecture', t: 'Four audiences on one platform — customers, brands, charities and creators — each with a route that never dead-ends. Shared primitives (donation value, impact receipt, cause card) are reused across all four so the model stays consistent wherever it surfaces.' },
+          { h: 'The Impact Bar', t: 'One component reads a customer’s donation history over a rolling 90-day window, aggregates their own orders, their referrals’ orders and community contributions, resolves the tier and applies the discount at checkout. Expiry, refund reversal and downgrades are first-class states, not edge cases.' },
+          { h: 'Design system', t: 'Two typefaces, a neutral base, and one charity green reserved exclusively for donation state so it never becomes decoration. Every donation figure on the storefront derives from live product data rather than hand-written copy.' },
+          { h: 'Agents in the pipeline', t: 'Cataloguing thousands of SKUs by hand does not scale. Agent workflows research a product from its name and EAN, draft the description, how-to-use and verbatim ingredients, and generate the listing imagery — with human review kept in the loop.' },
+        ],
+        resources: [{ kind: 'Live site', label: 'arrybarry.com', note: 'The marketplace in production', href: 'https://www.arrybarry.com' }] },
+      { name: 'ByteMind', cat: 'Digital', kind: 'img',
+        stack: 'Brand site · Narrative scroll', role: 'Web design & development', credit: 'bytemind.io · 2026',
+        desc: 'A studio site for an AI consultancy that refuses to lead with tools. The whole homepage is one argument, told as a scroll: the website is a brochure, the inbox is the workflow, the spreadsheet is the system — and here is where that changes.',
+        shot: 'https://bytemind.io/og.jpg', hero: 'https://bytemind.io/og.jpg',
+        specs: [
+          { label: 'Scope', value: 'Narrative homepage, service pages, booking flow' },
+          { label: 'Structure', value: 'Film-style scroll into a five-step method' },
+          { label: 'Systems', value: 'Chat widget, day/time booking, routed enquiry form' },
+          { label: 'Positioning', value: 'AI, automation and web for SMEs' },
+        ],
+        sections: [
+          { h: 'The argument', t: 'Most AI sites sell a tool. This one sells a sequence — map, find, rank, design, build — because the client’s real problem is not knowing which part of the business is ready to improve. The copy walks a visitor from "every week a new tool promises to fix it" to "start with the work".' },
+          { h: 'Scroll as film', t: 'The opening acts as a title sequence with a skip link for people who already know what they want. Each panel holds one sentence, so the argument lands even when someone scrolls fast — and the skip target puts them straight into the method.' },
+          { h: 'Conversion surfaces', t: 'Three ways in, deliberately different in commitment: an AI Opportunity Audit for the ready, a website redevelopment conversation for the specific, and a chat widget for everyone who wants to describe what their team repeats every week. Booking is a day-and-time picker rather than a calendar embed.' },
+        ],
+        resources: [
+          { kind: 'Live site', label: 'bytemind.io', note: 'The studio site in production', href: 'https://www.bytemind.io' },
+          { kind: 'Service page', label: 'AI agents', note: 'How the agent work is packaged', href: 'https://bytemind.io/services/ai-agents' },
+          { kind: 'Service page', label: 'Website redevelopment', note: 'Scope, method and timeline', href: 'https://bytemind.io/services/website-redevelopment' },
+        ] },
+      { name: 'Google App Concept', cat: 'Digital', kind: 'type',
+        stack: 'UI/UX concept · Figma', role: 'UI/UX design', credit: 'Concept project',
+        tags: [{ t: 'Mobile app' }, { t: 'Design system' }, { t: 'Prototype' }],
+        desc: 'A self-directed app concept designed end to end in Figma — flows, screens and a component set built to be handed to a developer rather than admired in isolation.',
+        specs: [{ label: 'Tool', value: 'Figma' }, { label: 'Output', value: 'Flows, screens, components' }, { label: 'Platform', value: 'Mobile' }, { label: 'Type', value: 'Self-directed concept' }],
+        sections: [
+          { h: 'Why concept work', t: 'Concept projects are where I test structure without a client’s constraints — how few screens a task can take, how a component set stays honest when the content changes. What survives here shows up later in client work.' },
+        ],
+        resources: [{ kind: 'Figma', label: 'Open the file', note: 'Screens, flows and components', href: 'https://www.figma.com/design/oPvRUR5aGeA9ojByfPcZjP/Google-App-idea?node-id=0-1' }] },
+      { name: 'Perfect Group', cat: 'Digital', kind: 'type',
+        stack: 'Client web design · Figma', role: 'Web & UI design', credit: 'Client project',
+        tags: [{ t: 'Website' }, { t: 'Brand-led layout' }, { t: 'Handoff-ready' }],
+        desc: 'Web design for Perfect Group — layout, hierarchy and page system designed in Figma, structured so the build could follow the file without interpretation.',
+        specs: [{ label: 'Tool', value: 'Figma' }, { label: 'Output', value: 'Page system, responsive layouts' }, { label: 'Client', value: 'Perfect Group' }, { label: 'Focus', value: 'Clarity of hierarchy' }],
+        sections: [
+          { h: 'Designing for the build', t: 'A design file is a specification. Type scales, spacing and states are defined once and reused, so what gets built matches what was approved — and changes stay cheap.' },
+        ],
+        resources: [{ kind: 'Figma', label: 'Open the file', note: 'Layouts and page system', href: 'https://www.figma.com/design/NhbvBMuvnJzEuDSenxGiQ0/Perfect-Group?node-id=0-1' }] },
+      { name: 'Listing Engine', cat: 'Agentic', kind: 'agent', agent: 'listing',
+        stack: 'Agent · Content automation', role: 'Agent design & prompt engineering', credit: 'Built with Claude · model-agnostic',
+        desc: 'A product sheet in, a finished listing out. Point it at a Google Sheet row — or the whole sheet — and it researches the product, then writes the description, how-to-use, ingredients and imagery in the brand’s own voice.',
+        specs: [
+          { label: 'Input', value: 'Product name + EAN, single row or bulk sheet' },
+          { label: 'Output', value: 'Description, how-to-use, ingredients, imagery' },
+          { label: 'Skills', value: 'Brand-site research, retailer fallback, voice rewrite, image gen' },
+          { label: 'Model', value: 'Built on Claude, portable to any model' },
+        ],
+        sections: [
+          { h: 'Why it exists', t: 'Catalogue work is the least glamorous bottleneck in ecommerce and the most expensive to get wrong. A brand with two thousand SKUs cannot hand-write two thousand listings, but it also cannot publish generic copy — the words are the product page.' },
+          { h: 'How it is built', t: 'Not one prompt: several skills that compose. One finds the brand’s own listing and treats it as the source of truth; one falls back to major retailers when the brand site is silent; one rewrites for tone while leaving the ingredient list verbatim; one generates on-brand imagery. Each is testable on its own.' },
+          { h: 'Where the human stays', t: 'The agent removes typing, not judgement. Output lands in the sheet for review before publish, and anything it could not verify is flagged rather than invented — which is what makes it safe to run at bulk.' },
+          { h: 'Portability', t: 'It was built on Claude because that is where the skill composition worked best, but nothing in the design is model-specific. A client already committed to another provider gets the same workflow rebuilt on theirs.' },
+        ] },
+      { name: 'Research Agent', cat: 'Agentic', kind: 'agent', agent: 'research',
+        stack: 'Agent · Scraping & synthesis', role: 'Agent design & workflow', credit: 'Brief-driven research',
+        desc: 'Feed in the requirement and it does the reading. The research agent scrapes and structures the data a brand actually needs — a category scan, a competitor teardown, an evidence check — and hands back cited findings instead of a wall of tabs.',
+        specs: [
+          { label: 'Input', value: 'A brief, trusted sources, the shape you want back' },
+          { label: 'Output', value: 'Structured findings with citations' },
+          { label: 'Pipeline', value: 'Scrape → dedupe → structure → cite' },
+          { label: 'Uses', value: 'Category scans, teardowns, claim checks' },
+        ],
+        sections: [
+          { h: 'The brief is the product', t: 'Most research agents fail because the request was vague. This one is built around a structured brief — what to look at, which sources count, and what the answer should look like — so the output is comparable run to run.' },
+          { h: 'Citations, not vibes', t: 'Every finding carries where it came from, and anything that is synthesis rather than source is labelled as such. A brand can act on the first kind and argue with the second — but it always knows which is which.' },
+          { h: 'Where it earns its keep', t: 'Pre-launch category work, competitor teardowns before a redesign, and claim checking before copy goes near a regulator. Work that used to take a week of tabs now arrives as a table.' },
+        ] },
+      { name: 'Site Chat Widget', cat: 'Agentic', kind: 'agent', agent: 'chat',
+        stack: 'Agent · Conversational UI', role: 'Conversation & interface design', credit: 'Three deployments',
+        desc: 'A widget that sits on a site and answers like a person: navigating visitors, pulling information out of the catalogue, qualifying enquiries and booking the call — instead of forcing everyone through a contact form.',
+        specs: [
+          { label: 'Form', value: 'Embedded website widget' },
+          { label: 'Jobs', value: 'Navigation, information extraction, qualification' },
+          { label: 'Built', value: 'Front ends prototyped in Figma Make' },
+          { label: 'Deployments', value: 'Removals, ArryBarry, PharmaMarket' },
+        ],
+        sections: [
+          { h: 'Designing the persona, not the bot', t: 'Each deployment gets its own voice and its own limits. A removals assistant qualifies a move and quotes a range; a marketplace assistant explains how the donation works; a pharmacy assistant stops and hands to a pharmacist the moment medication comes up. The refusal is part of the design.' },
+          { h: 'Conversation as navigation', t: 'Visitors do not arrive knowing your page names. They arrive with a symptom, a date or a budget. The widget maps that language onto the site’s structure and takes them there — which quietly fixes an information-architecture problem no menu redesign was going to solve.' },
+          { h: 'Prototyping in the open', t: 'Front ends were built in Figma Make so a client can click the conversation before anything is wired up. Getting agreement on tone and boundaries early is cheaper than retraining later.' },
+        ],
+        resources: [
+          { kind: 'Prototype', label: 'Removals chat', note: 'Qualifying a house move', href: 'https://www.figma.com/make/nFny0iBFjnhOGSz8EnV8F5/Chatbot-for-Removal-Company' },
+          { kind: 'Prototype', label: 'ArryBarry chat', note: 'Donations, orders and the Impact Bar', href: 'https://www.figma.com/make/bUEc54yuBqSaV9M8siWjcS/AB-Chat-Front' },
+          { kind: 'Prototype', label: 'PharmaMarket chat', note: 'Symptom-led navigation with a pharmacist handoff', href: 'https://www.figma.com/make/3Np0brB55ZzBqEs6LjG2VJ/PharmaMarket-Chat-Front' },
+        ] },
+    ];
+    const more = [
+      { name: 'Piggy Bank', cat: 'Product', kind: 'img', stack: 'Interactive product · Arduino', role: 'Product design', credit: 'Solo project',
+        desc: 'The piggy bank has stayed a static box on the corner of a study table. This one studies what else the object could do — and becomes a 21st-century interactive product for children.',
+        shot: im('a8a034_3645affee52448f9a4b5b42df30e4f28~mv2.jpg', 1200, 900, 'crop/x_0,y_310,w_1920,h_1187'), hero: im('a8a034_3645affee52448f9a4b5b42df30e4f28~mv2.jpg', 1920, 1050, 'crop/x_0,y_310,w_1920,h_1187'),
+        specs: [{ label: 'Users', value: 'Children aged 5–11' }, { label: 'Sensing', value: 'Inductive + colour sensors' }, { label: 'Brain', value: 'Arduino Mini Pro' }, { label: 'Display', value: 'Running total on LCD' }],
+        sections: [
+          { h: 'The insight', t: 'For children between five and eleven, the piggy bank is where money management begins — and it has stayed a static box. This one segregates coins by diameter, rolls notes in, reads their value with a colour sensor and shows the total.' },
+          { h: 'The build', t: 'User research across ages three to fourteen shaped the brief; mock-ups tested segregation and note collection; the working prototype packs the electronics into a friendly companion form.' },
+        ],
+        gallery: [{ img: im('a8a034_5cebbb17c90c4f1686b887c4ad337fbc~mv2.jpg', 1200, 900) }, { img: im('a8a034_77ec923904b24dd4b501b95a40edd9fa~mv2.jpg', 1200, 900) }, { img: im('a8a034_13c19372821d4dacac12ff70aeb3f444~mv2.png', 1200, 900) }, { img: im('a8a034_67e3a33d61f24f1f94c14320331ac943~mv2.jpg', 1200, 900) }] },
+      { name: 'Bamboo Project', cat: 'Product', kind: 'img', stack: 'Material exploration', role: 'Industrial design', credit: 'Solo project',
+        desc: 'The bamboo project — a material and making exploration.',
+        shot: im('a8a034_c28bb0dd3de048b9951ba1228bcf5e2a~mv2.png', 1200, 900, 'crop/x_0,y_493,w_1834,h_570'), hero: im('a8a034_c28bb0dd3de048b9951ba1228bcf5e2a~mv2.png', 1920, 800, 'crop/x_0,y_493,w_1834,h_570'),
+        specs: [], sections: [] },
+      { name: 'Portable Camera', cat: 'Product', kind: 'img', stack: 'Mobile photography accessories', role: 'Product research & design', credit: 'Solo project',
+        desc: 'Mapping the mobile photography sector for accessory opportunities — market sizing, gap analysis, concepts, and proof-of-concept models.',
+        shot: im('a8a034_485e8af7bd1a40f191833794a1432855~mv2.png', 1200, 900), hero: im('a8a034_485e8af7bd1a40f191833794a1432855~mv2.png', 1920, 1000),
+        specs: [{ label: 'Sector', value: 'Mobile photography accessories' }, { label: 'Method', value: 'Secondary market & product research' }, { label: 'Analysis', value: 'Market size and offering gaps' }, { label: 'Output', value: 'Concepts and POC models' }],
+        sections: [
+          { h: 'Research first', t: 'The project began with secondary market and product research to understand where mobile photography was actually going, then an analysis of market size and the gaps in what was already on sale.' },
+          { h: 'From gap to model', t: 'Concepts were developed against the specific gaps that analysis exposed, and taken to proof-of-concept models — enough to demonstrate the solution rather than only illustrate it.' },
+        ],
+        gallery: [{ img: im('a8a034_255fff50684e4a81a111519dc704d8bd~mv2.png', 1200, 900) }, { img: im('a8a034_ee2d6b3f7fb3472bae96e0c38eeabbfb~mv2.png', 1200, 900, 'crop/x_20,y_17,w_1741,h_1165') }] },
+      { name: 'Photo Story', cat: 'Product', kind: 'img', stack: 'Chic Curtains · 23 frames', role: 'Photography', credit: 'Semester III photography course',
+        desc: 'Chic Curtains — documenting a craft from start to finish in 23 frames: sharpening the cutting knife, splitting the bamboo, alternating the strings to weave the strips, and attaching the cloth at the edge to finish the product.',
+        shot: im('a8a034_20da481e68c549918ebbb0181967a3ce~mv2.jpg', 1200, 900), hero: im('a8a034_20da481e68c549918ebbb0181967a3ce~mv2.jpg', 1920, 1000),
+        specs: [{ label: 'Brief', value: 'Document a craft or manufacturing technique' }, { label: 'Subject', value: 'Bamboo curtain making' }, { label: 'Length', value: '23 frames' }, { label: 'Course', value: 'Photography, semester III' }],
+        sections: [
+          { h: 'The brief', t: 'Part of the semester III photography course: document any craft or manufacturing technique. The subject became the making of a bamboo curtain, told across 23 frames.' },
+          { h: 'Every step, in order', t: 'The sequence holds the full process — sharpening the cutting knife, splitting the bamboo, alternating the strings that weave the strips together, and attaching the cloth on the edge that finishes the product.' },
+        ],
+        gallery: [{ img: im('a8a034_26bfe77f8b9145fd9d2cba8e7b94cb76~mv2.jpg', 1200, 900) }, { img: im('a8a034_79c1d427e4784028a5c03c5ec101beac~mv2.jpg', 1200, 900) }] },
+      { name: 'Game Design', cat: 'Product', kind: 'img', stack: '3 Days 2 Nights · Board game', role: 'Game design', credit: 'Solo project',
+        desc: '3 Days 2 Nights is a board game for children aged 7 and up, built to sharpen logical and strategic reasoning through a survival plot — get out of the area alive, collecting energy points on the way.',
+        shot: im('a8a034_db9a54d7d9ff4d379cd3156f2319c65d~mv2.jpg', 1200, 900, 'crop/x_0,y_3,w_1920,h_1034'), hero: im('a8a034_db9a54d7d9ff4d379cd3156f2319c65d~mv2.jpg', 1920, 1000, 'crop/x_0,y_3,w_1920,h_1034'),
+        specs: [{ label: 'Players', value: 'Children aged 7+' }, { label: 'Goal', value: 'Logical & strategic reasoning' }, { label: 'Theme', value: 'Survival — day zone, night zone' }, { label: 'Components', value: 'Board, energy scale, asset & necessity cards' }],
+        sections: [
+          { h: 'Why a board, not a screen', t: 'Survival games were already popular with children — on phones and tablets. This one moves the same appetite onto a physical platform, where the reasoning happens between players rather than against a system.' },
+          { h: 'The system', t: 'Research started with Survive, Wilderness and Forbidden Desert — three market games built on a survival plot. From there: a day zone and a night zone, an energy scale bar, and two card decks, assets and basic necessities, that turn every turn into a trade-off.' },
+        ],
+        gallery: [{ img: im('a8a034_2c42db7398a44f3790ce7ce4d597a347~mv2.jpg', 1200, 900) }, { img: im('a8a034_e21cfb23a1b24f1e8d4f879f93045edb~mv2.jpg', 1200, 900, 'crop/x_182,y_0,w_1674,h_1518') }] },
+      { name: 'Exhibition Design', cat: 'Product', kind: 'img', stack: 'Spatial storytelling', role: 'Exhibition design', credit: 'Project work',
+        desc: 'An exhibition stand and space designed for Stanley hand tools.',
+        shot: im('a8a034_baf0238866104918b7278ef2332a02c3~mv2.jpg', 1200, 900), hero: im('a8a034_baf0238866104918b7278ef2332a02c3~mv2.jpg', 1920, 1000),
+        specs: [], sections: [] },
+      { name: 'Model Making', cat: 'Product', kind: 'img', stack: 'Craft & workshop', role: 'Model making', credit: 'Internship, 2019',
+        desc: 'A prototyping and workshop project — making a product’s form and function in PVC pipe, wood, acrylic, PU foam and polystyrene, then finishing each material properly.',
+        shot: im('a8a034_4aaac4e1021547e69e41eb93bb6c129a~mv2.png', 1200, 900, 'crop/x_0,y_114,w_1982,h_1372'), hero: im('a8a034_4aaac4e1021547e69e41eb93bb6c129a~mv2.png', 1920, 1000, 'crop/x_0,y_114,w_1982,h_1372'),
+        specs: [{ label: 'Materials', value: 'PVC pipe, wood, acrylic, PU foam, polystyrene' }, { label: 'Method', value: 'Technical drawings, manual cutting, filing' }, { label: 'Test', value: 'Model against the original product' }, { label: 'Focus', value: 'Finishes on each material' }],
+        sections: [
+          { h: 'Drawing before cutting', t: 'Every component was drawn with accurate measurements first, so the model could be built to those numbers rather than adjusted by eye halfway through.' },
+          { h: 'Finish is the skill', t: 'Accurate curves and precise cuts done by hand, then the four main components filed to a smooth finish. Comparing the model side by side with the original product is where the gaps show.' },
+        ],
+        gallery: [{ img: im('a8a034_214e9d27349740b1b6d2836443450744~mv2.png', 1200, 900) }, { img: im('a8a034_fbbc8f693c424fd2a6d640dc1ee62110~mv2.png', 1200, 900) }] },
+    ];
+    return { featured, more, all: featured.concat(more), im, W };
+  }
+  renderVals() {
+    const { featured, more, all, im, W } = this._data();
+    const tags = [
+      { img: im('a8a034_fa0626b7a275444b9d7c18e589f46125~mv2.jpg', 900, 600), label: 'SenseIT — OPPO×RCA, 2022' },
+      { img: W + 'ee9626_72fad720ce804b80947709d25a45f96e~mv2.jpg/v1/fill/w_900,h_600,al_c,q_88,enc_avif,quality_auto/ldf.jpg', label: 'Exhibited — London Design Festival 2022' },
+      { img: im('a8a034_0f8ff7b185794e14b9036028fd1bced3~mv2.jpg', 900, 600, 'crop/x_0,y_180,w_2558,h_1825'), label: 'Packaging Design — shuttle pack, 2020' },
+      { img: im('a8a034_3645affee52448f9a4b5b42df30e4f28~mv2.jpg', 900, 600, 'crop/x_0,y_310,w_1920,h_1187'), label: 'Piggy Bank — interactive product' },
+    ];
+    const navDefs = [
+      { key: null, label: 'Home', href: '#top', meta: 'Back to top', img: im('a8a034_fa0626b7a275444b9d7c18e589f46125~mv2.jpg', 1000, 750),
+        caption: 'SenseIT — OPPO×RCA, 2022', blurb: 'Product, digital and agentic design from one person — research through to a built, working thing.' },
+      { key: 'services', label: 'Services', href: '#services', meta: 'Three practices', img: im('a8a034_0f8ff7b185794e14b9036028fd1bced3~mv2.jpg', 1000, 750, 'crop/x_0,y_180,w_2558,h_1825'),
+        caption: 'Packaging Design — shuttle pack', blurb: 'What I take on, what you get back, and how a project actually runs from first call to handover.' },
+      { key: 'work', label: 'Work', href: '#work', meta: '18 projects', img: im('a8a034_9f9e865942f04a849309f848c08a5bcc~mv2.jpg', 1000, 750),
+        caption: 'Swoosh — mechanical toy', blurb: 'Every project in one place, grouped by product, digital and agentic — each with its own case study.' },
+      { key: 'skills', label: 'Skills', href: '#skills', meta: 'Design → build → automate', img: im('a8a034_db9a54d7d9ff4d379cd3156f2319c65d~mv2.jpg', 1000, 750, 'crop/x_0,y_3,w_1920,h_1034'),
+        caption: 'Game Design — 3 Days 2 Nights', blurb: 'The technical side: what I code, what I prototype, and which tools do which part of the job.' },
+      { key: 'experience', label: 'Experience', href: '#experience', meta: '2014 — now', img: im('a8a034_f3633396872241879ae3e25f5696921a~mv2.jpg', 1000, 750),
+        caption: 'FIFI — smart companion toy', blurb: 'Twelve roles across studios, classrooms and client work, plus education and awards.' },
+      { key: 'about', label: 'About me', href: '#about', meta: 'RCA · London', img: W + 'a8a034_75001b8a8cbb4f0d922fb051dd08af6d~mv2.jpg/v1/fill/w_1000,h_750,al_c,q_85,enc_avif,quality_auto/IMG_4949_JPG.jpg',
+        caption: 'Danisha Mehta', blurb: 'Product Design graduate of the Royal College of Art, now working across design, code and automation.' },
+      { key: 'contact', label: 'Contact', href: '#contact', meta: 'Email me', img: im('a8a034_3645affee52448f9a4b5b42df30e4f28~mv2.jpg', 1000, 750, 'crop/x_0,y_310,w_1920,h_1187'),
+        caption: 'Piggy Bank — interactive product', blurb: 'Availability, what to send in a first message, and how a project gets scoped and priced.' },
+    ];
+    const tz = { timeZone: 'Europe/London', hour12: false };
+    const tag = tags[this.state.tagIndex];
+    const f = this.state.filter;
+    const visible = f === 'All' ? featured : featured.filter(p => p.cat === f);
+    this._visibleCount = visible.length;
+    const active = Math.min(visible.length - 1, Math.max(0, this.state.active));
+    const ap = visible[active] || featured[0];
+    const di = this.state.detailIdx;
+    const detail = di == null ? null : all[di];
+    const journey = detail && detail.journey ? detail.journey : [];
+    const catCounts = { Product: featured.filter(p => p.cat === 'Product').length, Digital: featured.filter(p => p.cat === 'Digital').length, Agentic: featured.filter(p => p.cat === 'Agentic').length };
+
+    const byName = n => all.find(p => p.name === n);
+    const tile = n => { const p = byName(n); const shot = p.shot || p.hero || ''; return { name: p.name, stack: p.stack, shot, hasShot: !!shot, noShot: !shot, cat: p.cat, open: () => this.setState({ page: null, detailIdx: all.indexOf(p), jstep: 0 }) }; };
+    const chips = arr => arr.map(t => ({ t }));
+    const PAGES = {
+      services: {
+        eyebrow: 'Services', title: 'What I take on',
+        lede: 'Three practices that usually arrive as one job: design the thing, build the thing, and automate the work that surrounds it. Freelance and contract, London or remote.',
+        meta: [{ label: 'Engagement', value: 'Fixed project, monthly retainer or day rate' }, { label: 'Based', value: 'London — working remotely across time zones' }, { label: 'Typical start', value: 'One to two weeks from the first call' }, { label: 'First step', value: 'A 30-minute call — no brief document required' }],
+        gridTitle: 'The three practices',
+        grid: [
+          { n: '01', h: 'Product design', t: 'Objects and systems taken from research to a prototype that behaves. I run the research, frame the problem properly, model it, and build it until it works — inclusive technology, toys, packaging and consumer products.',
+            items: chips(['User research & problem framing', 'Concept development & CAD', 'Prototyping and model making', 'Design for manufacture', 'Packaging structure & graphics']) },
+          { n: '02', h: 'Digital design', t: 'Websites and interfaces designed and built. Ecommerce storefronts, marketing sites and design systems — either handed over as a specification a developer can follow, or built by me end to end.',
+            items: chips(['UX structure & wireframes', 'UI design in Figma', 'Shopify Liquid, Webflow, custom front-end', 'Design systems & component libraries', 'Conversion & content structure']) },
+          { n: '03', h: 'Agentic design', t: 'AI agents wired into real operations rather than demos. Content pipelines, research workflows and site assistants, designed as products — with the human review kept exactly where it needs to be.',
+            items: chips(['Workflow mapping', 'Agent & skill design', 'Prompt engineering & evaluation', 'Content automation at bulk', 'Conversational interfaces & widgets']) },
+        ],
+        stepsTitle: 'How a project runs',
+        steps: [
+          { n: '01', h: 'Scope', t: 'A call, then a short written scope: the problem, what gets delivered, what is explicitly out, and a price. Nothing starts until that document is agreed.' },
+          { n: '02', h: 'Research & structure', t: 'Users, competitors, constraints, or the existing system if there is one. This is where the real problem usually turns out to be different from the stated one.' },
+          { n: '03', h: 'Design & prototype', t: 'Concepts narrowed fast, then made real — CAD and physical models, Figma prototypes, or a working agent you can run against your own data.' },
+          { n: '04', h: 'Build & handover', t: 'Built front-end, tooled drawings or a deployed workflow, plus the documentation that lets your team change it without me.' },
+        ],
+        blocks: [
+          { h: 'Why the three sit together', t: 'A storefront is a product, a physical product now ships with an app, and both generate operational work that an agent can absorb. Keeping the three practices in one pair of hands removes the handover gaps where most of the quality gets lost.' },
+          { h: 'What I do not do', t: 'I do not take on brand identity from scratch, motion-heavy campaign work, or projects where the design decisions have already been made and only execution is wanted. I will happily recommend someone who does.' },
+        ],
+        ctaNote: 'Tell me what the problem is — a paragraph is enough',
+      },
+      work: {
+        eyebrow: 'Work', title: 'Selected projects',
+        lede: 'Eighteen projects across three practices. Product work from the Royal College of Art and Nirma University, client digital work, and agents built for real operations. Click any project to open its case study.',
+        meta: [{ label: 'Product', value: '11 projects — objects, packaging, toys, exhibition' }, { label: 'Digital', value: '4 projects — storefronts, sites, UI systems' }, { label: 'Agentic', value: '3 agents — content, research, conversation' }, { label: 'Span', value: '2018 — present' }],
+        projectGroups: [
+          { h: 'Product design', note: 'Objects, packaging and interactive things', items: ['SenseIT', 'Packaging Design', 'Swoosh', 'FIFI', 'Piggy Bank', 'Game Design', 'Portable Camera', 'Model Making', 'Photo Story', 'Bamboo Project', 'Exhibition Design'].map(tile) },
+          { h: 'Digital design', note: 'Websites, storefronts and interface systems', items: ['ArryBarry', 'ByteMind', 'Google App Concept', 'Perfect Group'].map(tile) },
+          { h: 'Agentic design', note: 'Agents designed as products', items: ['Listing Engine', 'Research Agent', 'Site Chat Widget'].map(tile) },
+        ],
+        ctaNote: 'Looking for something specific? Ask',
+      },
+      skills: {
+        eyebrow: 'Skills', title: 'How I work, technically',
+        lede: 'I design, I build, and I automate. That means CAD and a workshop on one side, a code editor and agent workflows on the other — and enough overlap that a design never gets thrown over a wall.',
+        meta: [{ label: 'Design', value: 'Rhino, SolidWorks, Creo, KeyShot, Figma' }, { label: 'Code', value: 'HTML, CSS, JavaScript, Shopify Liquid, Python' }, { label: 'Automation', value: 'Agent skills, prompt systems, n8n, Zapier' }, { label: 'Physical', value: 'Arduino, model making, laser cutting, DTG' }],
+        gridTitle: 'Three technical practices',
+        grid: [
+          { n: '01', h: 'Coding', t: 'I build what I design. HTML, CSS and JavaScript by hand; Shopify Liquid for custom themes, sections and metafields; Python for scripts and data work. Enough to ship a front-end — and enough to know exactly what I am asking for when a developer builds it instead.', items: [] },
+          { n: '02', h: 'Interaction design', t: 'Interaction is where a design proves itself: hover, error, empty state, slow connection, the second visit. I prototype those properly — in Figma, in code, or on a working Arduino rig when the interaction is physical.', items: [] },
+          { n: '03', h: 'Automation & agents', t: 'Workflow design before tooling. Find what repeats, decide what a machine should do and where a human must stay, then build it as composable skills that behave the same on the hundredth run as the first.', items: [] },
+        ],
+        chipsGroups: [
+          { h: 'AI & automation', items: chips(['AI workflow design', 'Prompt engineering', 'Agent skills', 'Content automation', 'n8n / Zapier', 'No-code & low-code', 'Bubble.io']) },
+          { h: 'Code & front-end', items: chips(['HTML / CSS', 'JavaScript', 'Shopify Liquid', 'Python', 'Webflow', 'Wix']) },
+          { h: 'Product & UX', items: chips(['UI/UX design', 'User research', 'Wireframing', 'Prototyping', 'Figma', 'Adobe XD']) },
+          { h: 'Ecommerce & digital systems', items: chips(['Shopify', 'OpenCart', 'Product content strategy', 'Conversion optimisation', 'Social commerce']) },
+          { h: 'Design & technical', items: chips(['Rhino', 'SolidWorks', 'Creo', 'KeyShot', 'AutoCAD 2D/3D', 'Arduino', 'Adobe Creative Suite', 'Procreate']) },
+          { h: 'Making & tools', items: chips(['Model making', 'Laser cutting', 'DTG printing', 'Canva', 'Microsoft Office']) },
+        ],
+        blocks: [
+          { h: 'Where the code stops', t: 'I am a designer who codes, not a backend engineer. I build front-ends, theme layers and automation confidently; for databases, payments infrastructure and heavy application logic I work alongside a developer — and the handover is cheap because the file already reads like a specification.' },
+          { h: 'Prototypes over decks', t: 'Wherever the budget allows, the deliverable that ends a phase is something you can use: a physical model, a clickable prototype, or an agent run against your own spreadsheet. Opinions about a rendering are cheap; opinions about a working thing are useful.' },
+        ],
+        ctaNote: 'Need a specific stack covered? Ask',
+      },
+      experience: {
+        eyebrow: 'Experience', title: 'Where I have worked',
+        lede: 'Twelve roles across design studios, classrooms, retail and client work — product design internships in India, teaching and curriculum work in London, and freelance design and automation since 2024.',
+        meta: [{ label: 'Current', value: 'Freelance web design & automation, London' }, { label: 'Teaching', value: 'Curriculum lead & design instructor, ONELAB College' }, { label: 'Studio', value: 'Product design internships across four studios' }, { label: 'Span', value: '2014 — present' }],
+        rowsTitle: 'Roles',
+        rows: [
+          { a: 'Nov 2024 — present', b: 'Web Designer · London', c: 'Web design & automation' },
+          { a: 'Oct 2023 — Oct 2024', b: 'ONELAB College · London', c: 'Curriculum lead, DSL in-training, design instructor' },
+          { a: 'Aug 2023', b: 'BigShots · London', c: 'Graphic design, freelance' },
+          { a: 'Aug 2023', b: 'Costa Coffee · London', c: 'Digital content development, freelance' },
+          { a: 'Aug 2022', b: 'ArryBarry Warehouse · London', c: 'Graphic design, freelance' },
+          { a: 'Jan 2021 — Jun 2021', b: 'Inovora India Design Studio · Ahmedabad', c: 'Product design intern' },
+          { a: 'Aug 2020', b: 'PopCulture UK · London', c: 'Graphic designer' },
+          { a: 'Jun 2020 — Aug 2020', b: 'Bracket Innovation · Ahmedabad', c: 'Product design intern' },
+          { a: 'Mar 2020 — Jul 2020', b: 'D-Breath · Ahmedabad', c: 'Product design lead' },
+          { a: 'Jun 2019 — Jul 2019', b: 'Agastya International Foundation · Bangalore', c: 'Product design intern' },
+          { a: 'Jul 2018', b: 'Jayantilal & Co. · Ahmedabad', c: 'Product design intern' },
+          { a: '2014 — 2017', b: 'Kanoria Centre of Arts · Ahmedabad', c: 'Mentor' },
+        ],
+        gridTitle: 'Education & recognition',
+        grid: [
+          { n: 'MA', h: 'Royal College of Art', t: 'Design Products, London. Where the OPPO×RCA work and the London Design Festival exhibition came from — and where the practice shifted from objects alone to objects plus the systems around them.', items: [] },
+          { n: 'B.Des', h: 'Nirma University', t: 'Industrial Design, Ahmedabad. Gold Medalist. Packaging, toy design, game design, model making and the manufacturing grounding that still shapes how I approach a physical brief.', items: [] },
+          { n: 'Awards', h: 'Recognition', t: 'Emerging Designer of the Year 2024, Jaipur Design Festival · Finalist, OPPO×RCA 2022 · Exhibited, London Design Festival 2022 · Gold Medalist, Nirma University.', items: [] },
+        ],
+        ctaNote: 'Full CV available on request',
+      },
+      about: {
+        eyebrow: 'About me', title: 'Danisha Mehta',
+        lede: 'I am a Product Design graduate of the Royal College of Art who now spends as much time in code and automation as in CAD. I design the thing, build the thing, and wire up the agents that keep it running — storefronts, interfaces, physical products, and the workflows behind them.',
+        photo: W + 'a8a034_75001b8a8cbb4f0d922fb051dd08af6d~mv2.jpg/v1/fill/w_800,h_1000,al_c,q_85,enc_avif,quality_auto/IMG_4949_JPG.jpg',
+        meta: [{ label: 'Based', value: 'London, working remotely' }, { label: 'Education', value: 'MA Royal College of Art · B.Des Nirma University' }, { label: 'Recognition', value: 'Emerging Designer of the Year 2024, Jaipur Design Festival' }, { label: 'Exhibited', value: 'London Design Festival 2022' }],
+        gridTitle: 'How I think about the work',
+        grid: [
+          { n: '01', h: 'Start with the failure', t: 'Most briefs describe a solution. The useful work is finding the specific failure underneath it — the lid nobody can open, the eight steps a screen reader takes, the two thousand listings nobody has time to write.', items: [] },
+          { n: '02', h: 'Make it, then judge it', t: 'A rendering hides problems that a model exposes in ten seconds. Every project here has something built in it: a rig, a prototype, a live site, a running agent.', items: [] },
+          { n: '03', h: 'Design for whoever inherits it', t: 'Tooling drawings, a component library, a documented workflow. The measure of a handover is whether the team can change it six months later without calling me.', items: [] },
+        ],
+        blocks: [
+          { h: 'From objects to systems', t: 'The training is industrial design — manufacturing, materials, tolerances. What changed at the RCA and after it is that the object stopped being the whole deliverable: a toy has an app, a product has a listing, a shop has an operational pipeline behind it. Learning to build those parts myself was the only way to keep designing them honestly.' },
+          { h: 'Working with me', t: 'I am direct about scope and I write things down. You will get a short written scope before anything starts, a working artefact at the end of each phase, and no surprises in an invoice. If something in the brief is wrong, I will say so early rather than build it politely.' },
+        ],
+        ctaNote: 'Happy to talk about a project, a role, or neither',
+      },
+      contact: {
+        eyebrow: 'Contact', title: "Let's work together",
+        lede: 'Freelance and contract work, plus permanent roles for the right team. The quickest way in is an email describing the problem — one paragraph is genuinely enough to start.',
+        meta: [{ label: 'Email', value: 'danishamehta@gmail.com' }, { label: 'Based', value: 'London — remote across time zones' }, { label: 'Availability', value: 'Taking new projects' }, { label: 'Response', value: 'Within two working days' }],
+        gridTitle: 'Before you write',
+        grid: [
+          { n: '01', h: 'What to send', t: 'What the problem is, who it affects, roughly when it needs to exist and roughly what the budget looks like. Links to anything that already exists — a site, a sheet, a sketch, a competitor you like.', items: [] },
+          { n: '02', h: 'How I quote', t: 'Fixed price against a written scope for defined projects, a day rate for exploratory or ongoing work, and a monthly retainer where the work is continuous — automation and storefront work usually is.', items: [] },
+          { n: '03', h: 'What happens next', t: 'A 30-minute call to test whether the problem is the one you think it is, then a short written scope within a few days. Nothing gets built before that document is agreed.', items: [] },
+        ],
+        blocks: [
+          { h: 'Elsewhere', t: 'LinkedIn: linkedin.com/in/danisha-mehta-9488b4183 · Behance: be.net/danishamehta14 · Live work: arrybarry.com and bytemind.io. Case studies for anything you see here are on this site rather than a separate PDF, but a CV is available on request.' },
+        ],
+        ctaNote: 'danishamehta@gmail.com',
+      },
+    };
+    const pk = this.state.page;
+    const page = pk ? PAGES[pk] : null;
+    const openPage = k => { this.setState({ page: k, menuOpen: false, detailIdx: null }); window.scrollTo({ top: 0 }); };
+    const goHome = () => this.setState({ page: null, detailIdx: null, menuOpen: false });
+    const setFilter = (x) => {
+      this._cards = []; this._wp = 0; this._targetWp = 0;
+      this.setState({ filter: x, active: 0 });
+      window.scrollTo({ top: (this._workEl ? this._workEl.offsetTop : 0), behavior: 'smooth' });
+    };
+    return {
+      menuOpen: this.state.menuOpen,
+      menuClosed: !this.state.menuOpen,
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen, hoverNav: 0 })),
+      menuImg: navDefs[this.state.hoverNav].img,
+      menuCaption: navDefs[this.state.hoverNav].caption,
+      menuBlurb: navDefs[this.state.hoverNav].blurb,
+      goHome,
+      navItems: navDefs.map((n, i) => ({ label: n.label, href: n.href, meta: n.meta,
+        num: String(i + 1).padStart(2, '0'),
+        onHover: () => this.setState({ hoverNav: i }),
+        onClick: () => (n.key ? openPage(n.key) : goHome()) })),
+      headerNav: navDefs.filter(n => n.key).map(n => ({ label: n.label, href: n.href, onClick: () => openPage(n.key) })),
+      pageOpen: page != null,
+      page: page || {},
+      pageMeta: page && page.meta ? page.meta : [],
+      pageGrid: page && page.grid ? page.grid : [],
+      pageHasGrid: !!(page && page.grid),
+      pageSteps: page && page.steps ? page.steps : [],
+      pageHasSteps: !!(page && page.steps),
+      pageBlocks: page && page.blocks ? page.blocks : [],
+      pageHasBlocks: !!(page && page.blocks),
+      pageRows: page && page.rows ? page.rows : [],
+      pageHasRows: !!(page && page.rows),
+      pageChips: page && page.chipsGroups ? page.chipsGroups : [],
+      pageHasChips: !!(page && page.chipsGroups),
+      pageProjectGroups: page && page.projectGroups ? page.projectGroups : [],
+      pageHasProjectGroups: !!(page && page.projectGroups),
+      pageHasPhoto: !!(page && page.photo),
+      closePage: () => this.setState({ page: null }),
+      tagImg: tag.img, tagLabel: tag.label,
+      heroImgRef: el => { this._heroImg = el; },
+      vLineRef: el => { this._vLine = el; },
+      hLineRef: el => { this._hLine = el; },
+      heroMouseMove: e => { this._mx = e.clientX; this._my = e.clientY; },
+      workRef: el => { this._workEl = el; },
+      clock: this.state.now.toLocaleTimeString('en-GB', { ...tz, hour: '2-digit', minute: '2-digit' }),
+      clockFull: this.state.now.toLocaleTimeString('en-GB', tz),
+      workHeight: (visible.length * 100) + 'vh',
+      services: [
+        { index: '01', title: 'Product design', cta: 'See product work', count: catCounts.Product + ' projects', cat: 'Product',
+          blurb: 'Objects and systems taken from research to a prototype that actually works — inclusive tech, toys, packaging and consumer products.',
+          items: [{ t: 'User research & problem framing' }, { t: 'CAD, prototyping, model making' }, { t: 'Design for manufacture' }, { t: 'Packaging & graphics' }] },
+        { index: '02', title: 'Digital design', cta: 'See digital work', count: catCounts.Digital + ' projects', cat: 'Digital',
+          blurb: 'Websites and interfaces designed and built — ecommerce storefronts, marketing sites, and design systems handed over ready to develop.',
+          items: [{ t: 'UI/UX design & prototyping' }, { t: 'Shopify, Webflow, custom front-end' }, { t: 'Design systems & handoff' }, { t: 'Conversion & content structure' }] },
+        { index: '03', title: 'Agentic design', cta: 'See agent work', count: catCounts.Agentic + ' projects', cat: 'Agentic',
+          blurb: 'AI agents wired into real operations — content pipelines, research workflows and site assistants, designed as products rather than prompts.',
+          items: [{ t: 'Agent & workflow design' }, { t: 'Prompt engineering & skills' }, { t: 'Content automation at bulk' }, { t: 'Conversational interfaces' }] },
+      ].map(s => ({ ...s, select: () => setFilter(s.cat),
+        bg: this.state.filter === s.cat ? '#111' : '#e9e7e2',
+        color: this.state.filter === s.cat ? '#f0efec' : '#111' })),
+      filters: ['All', 'Product', 'Digital', 'Agentic'].map(label => ({ label,
+        select: () => setFilter(label),
+        bg: f === label ? '#f0efec' : 'transparent',
+        color: f === label ? '#08080a' : '#9a9a9e',
+        border: f === label ? '#f0efec' : '#3a3a40' })),
+      visible: visible.map((p, i) => {
+        const near = Math.abs(i - active) <= 1;
+        const isMockKind = p.kind === 'arry' || p.kind === 'agent';
+        return { ...p,
+          isImg: p.kind === 'img',
+          showArryMock: p.kind === 'arry' && near,
+          showAgentMock: p.kind === 'agent' && near,
+          showPanel: p.kind === 'type' || (isMockKind && !near),
+          tags: p.tags || [{ t: p.cat + ' design' }, { t: p.role }],
+          ref: el => { this._cards[i] = el; },
+          open: () => this.setState({ detailIdx: all.indexOf(p), jstep: 0 }) };
+      }),
+      workCounter: (active + 1) + ' / ' + visible.length,
+      activeCat: ap.cat + ' design',
+      activeName: ap.name, activeStack: ap.stack, activeRole: ap.role, activeDesc: ap.desc,
+      openActive: () => this.setState({ detailIdx: all.indexOf(ap), jstep: 0 }),
+      moreWork: more.map(m => ({ ...m, open: () => this.setState({ detailIdx: all.indexOf(m), jstep: 0 }) })),
+      practices: [
+        { h: 'Coding', t: 'I build what I design. HTML, CSS and JavaScript by hand; Shopify Liquid for custom themes and metafields; Python for scripts and data work. Enough to ship a front-end, and enough to know what I am asking a developer for when I am not the one building it.' },
+        { h: 'Interaction design', t: 'Interaction is where a design proves itself: what happens on hover, on error, on an empty state, on a slow connection. I prototype these properly — in Figma, in code, or in a working rig with Arduino when the interaction is physical.' },
+        { h: 'Automation & agents', t: 'Workflow design before tooling: find what repeats, decide what a machine should do and where a human must stay. Then build it — agent skills, n8n and Zapier chains, and prompt systems that behave the same way on the hundredth run as on the first.' },
+      ],
+      skillGroups: [
+        { h: 'AI & automation', items: ['AI workflow design', 'Prompt engineering', 'Agent skills', 'Content automation', 'n8n / Zapier', 'No-code & low-code', 'Bubble.io'].map(t => ({ t })) },
+        { h: 'Code & front-end', items: ['HTML / CSS', 'JavaScript', 'Shopify Liquid', 'Python', 'Webflow', 'Wix'].map(t => ({ t })) },
+        { h: 'Product & UX', items: ['UI/UX design', 'User research', 'Wireframing', 'Prototyping', 'Figma', 'Adobe XD'].map(t => ({ t })) },
+        { h: 'Ecommerce & digital systems', items: ['Shopify', 'OpenCart', 'Product content strategy', 'Conversion optimisation', 'Social commerce'].map(t => ({ t })) },
+        { h: 'Design & technical', items: ['Rhino', 'SolidWorks', 'Creo', 'KeyShot', 'AutoCAD 2D/3D', 'Arduino', 'Adobe Creative Suite', 'Procreate'].map(t => ({ t })) },
+        { h: 'Making & tools', items: ['Model making', 'Laser cutting', 'DTG printing', 'Canva', 'Microsoft Office'].map(t => ({ t })) },
+      ],
+      experience: [
+        { dates: 'Nov 2024 — present', org: 'Web Designer · London', role: 'Web design & automation' },
+        { dates: 'Oct 2023 — Oct 2024', org: 'ONELAB College · London', role: 'Curriculum lead, DSL in-training, design instructor' },
+        { dates: 'Aug 2023', org: 'BigShots · London', role: 'Graphic design, freelance' },
+        { dates: 'Aug 2023', org: 'Costa Coffee · London', role: 'Digital content development, freelance' },
+        { dates: 'Aug 2022', org: 'ArryBarry Warehouse · London', role: 'Graphic design, freelance' },
+        { dates: 'Jan 2021 — Jun 2021', org: 'Inovora India Design Studio · Ahmedabad', role: 'Product design intern' },
+        { dates: 'Aug 2020', org: 'PopCulture UK · London', role: 'Graphic designer' },
+        { dates: 'Jun 2020 — Aug 2020', org: 'Bracket Innovation · Ahmedabad', role: 'Product design intern' },
+        { dates: 'Mar 2020 — Jul 2020', org: 'D-Breath · Ahmedabad', role: 'Product design lead' },
+        { dates: 'Jun 2019 — Jul 2019', org: 'Agastya International Foundation · Bangalore', role: 'Product design intern' },
+        { dates: 'Jul 2018', org: 'Jayantilal & Co. · Ahmedabad', role: 'Product design intern' },
+        { dates: '2014 — 2017', org: 'Kanoria Centre of Arts · Ahmedabad', role: 'Mentor' },
+      ],
+      detailOpen: detail != null,
+      detail: detail || {},
+      detailIsSenseit: !!(detail && detail.senseit),
+      detailGeneric: !!(detail && !detail.senseit),
+      detailHeroImg: !!(detail && !detail.senseit && detail.kind === 'img'),
+      detailIsArry: !!(detail && detail.kind === 'arry'),
+      detailIsAgent: !!(detail && detail.kind === 'agent'),
+      detailIsType: !!(detail && detail.kind === 'type'),
+      detailTags: detail && detail.tags ? detail.tags : [],
+      detailSpecs: detail && detail.specs ? detail.specs : [],
+      detailHasSpecs: !!(detail && detail.specs && detail.specs.length),
+      detailSections: detail && detail.sections ? detail.sections : [],
+      detailGallery: detail && detail.gallery ? detail.gallery : [],
+      detailHasGallery: !!(detail && detail.gallery && detail.gallery.length),
+      detailResources: detail && detail.resources ? detail.resources : [],
+      detailHasResources: !!(detail && detail.resources && detail.resources.length),
+      detailHasJourney: journey.length > 0,
+      journeyTitle: detail && detail.journeyTitle ? detail.journeyTitle : 'Process',
+      journeyTabs: journey.map((j, i) => ({ label: j.label, num: String(i + 1).padStart(2, '0'),
+        color: i === this.state.jstep ? '#111' : '#a5a39c',
+        rail: i === this.state.jstep ? '#111' : '#d5d3cc',
+        select: () => this._goJourney(i) })),
+      journeyCards: journey.map((j, i) => ({ img: j.img, label: j.label, text: j.text,
+        num: String(i + 1).padStart(2, '0'),
+        opacity: i === this.state.jstep ? '1' : '0.42' })),
+      journeyCounter: String(Math.min(this.state.jstep + 1, Math.max(journey.length, 1))).padStart(2, '0') + ' / ' + String(journey.length).padStart(2, '0'),
+      jTrackRef: el => { this._jTrack = el; },
+      onJourneyScroll: () => {
+        const t = this._jTrack;
+        if (!t) return;
+        clearTimeout(this._js);
+        this._js = setTimeout(() => {
+          const kids = Array.from(t.children);
+          const mid = t.scrollLeft + t.clientWidth / 2;
+          let best = 0, bd = Infinity;
+          kids.forEach((k, i) => {
+            const c = k.offsetLeft + k.offsetWidth / 2;
+            if (Math.abs(c - mid) < bd) { bd = Math.abs(c - mid); best = i; }
+          });
+          if (best !== this.state.jstep) this.setState({ jstep: best });
+        }, 90);
+      },
+      prevJourney: () => this._goJourney((this.state.jstep - 1 + journey.length) % Math.max(journey.length, 1)),
+      nextJourney: () => this._goJourney((this.state.jstep + 1) % Math.max(journey.length, 1)),
+      nextName: detail ? all[(di + 1) % all.length].name : '',
+      openNext: () => this.setState(s => ({ detailIdx: (s.detailIdx + 1) % all.length, jstep: 0 })),
+      closeDetail: () => this.setState({ detailIdx: null }),
+    };
+  }
+}
+</script>
+</body>
+</html>

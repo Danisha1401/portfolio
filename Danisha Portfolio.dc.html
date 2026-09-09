@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;300;400;600&amp;display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #f0efec; }
+body { font-family: 'Josefin Sans', sans-serif; }
+::selection { background: #d1310f; color: #fff; }
+a { color: inherit; text-decoration: none; }
+a:hover { color: #d1310f; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</helmet>
+<div style="background: #f0efec; color: #111; min-width: 1100px;">
+
+<header style="position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; justify-content: space-between; align-items: center; padding: 26px 40px; mix-blend-mode: difference; color: #fff;">
+  <a href="#top" style="font-weight: 600; font-size: 22px; letter-spacing: 0.04em; color: #fff;">DM</a>
+  <div onClick="{{ toggleMenu }}" style="cursor: pointer; width: 44px; height: 44px; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 7px;">
+    <sc-if value="{{ menuClosed }}" hint-placeholder-val="{{ true }}">
+      <div style="width: 34px; height: 1.5px; background: #fff;"></div>
+      <div style="width: 34px; height: 1.5px; background: #fff;"></div>
+    </sc-if>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="font-size: 26px; font-weight: 200; line-height: 1; color: #fff;">✕</div>
+    </sc-if>
+  </div>
+</header>
+
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position: fixed; inset: 0; z-index: 50; background: #f0efec; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 60px; padding: 0 8vw; animation: fadeUp 0.45s ease both;">
+    <h2 style="font-weight: 300; font-size: clamp(60px, 7vw, 120px); line-height: 1.05; letter-spacing: 0.01em; margin: 0; text-transform: uppercase;">Human<br>First<br>Designer</h2>
+    <img src="{{ menuImg }}" alt="" style="width: 30vw; max-width: 480px; aspect-ratio: 16/9; object-fit: cover; display: block;">
+    <nav style="display: flex; flex-direction: column; gap: 6px; justify-self: end;">
+      <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="6">
+        <a href="{{ nav.href }}" onClick="{{ nav.onClick }}" onMouseEnter="{{ nav.onHover }}" style="font-size: clamp(36px, 3.6vw, 60px); font-weight: 200; text-transform: uppercase; letter-spacing: 0.03em; color: {{ nav.color }}; transition: color 0.25s;" style-hover="color: #111;">{{ nav.label }}</a>
+      </sc-for>
+    </nav>
+  </div>
+</sc-if>
+
+<section id="top" data-screen-label="Hero" style="position: relative; height: 100vh; min-height: 720px; overflow: hidden;">
+  <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 0; border-left: 1px dashed #b5b3ad;"></div>
+  <div style="position: absolute; top: 41%; left: 0; right: 0; height: 0; border-top: 1px dashed #b5b3ad;"></div>
+  <div style="position: absolute; left: 40px; top: 38.5%; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300;">Product Designer</div>
+  <div style="position: absolute; left: 50%; top: 41%; transform: translate(-50%, -60%); text-align: center;">
+    <img src="{{ tagImg }}" alt="" style="width: 340px; aspect-ratio: 3/2; object-fit: cover; display: block;">
+    <div style="margin-top: 14px; font-size: 16px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300; white-space: nowrap;">[{{ tagLabel }}]</div>
+  </div>
+  <h1 style="position: absolute; bottom: 6%; left: 0; right: 0; margin: 0; font-weight: 200; text-transform: uppercase; line-height: 0.98; letter-spacing: 0.01em; font-size: clamp(58px, 6.6vw, 128px); padding: 0 40px;">
+    <span style="display: block; text-align: left;">Designing Meaningful</span>
+    <span style="display: block; text-align: right;">Product Experiences</span>
+  </h1>
+  <div style="position: absolute; bottom: 4%; left: 40px; font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300;">Danisha Mehta</div>
+  <div style="position: absolute; bottom: 4%; left: 33%; font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300;">Current time: {{ clock }} London</div>
+</section>
+
+<section data-screen-label="Work" style="background: #08080a; color: #f0efec;">
+  <sc-for list="{{ projects }}" as="p" hint-placeholder-count="4">
+    <div style="position: sticky; top: 0; height: 100vh; min-height: 700px; display: grid; grid-template-columns: 1.5fr 1fr; overflow: hidden; background: #08080a;">
+      <div style="position: relative; overflow: hidden;">
+        <img src="{{ p.bg }}" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55);">
+        <img src="{{ p.shot }}" alt="{{ p.name }}" style="position: absolute; left: 10%; top: 12%; width: 80%; height: 76%; object-fit: cover; object-position: center; box-shadow: 0 40px 80px rgba(0,0,0,0.45);">
+      </div>
+      <div style="padding: 120px 60px 60px; display: flex; flex-direction: column; gap: 28px;">
+        <div style="display: flex; align-items: flex-start; gap: 14px;">
+          <h2 style="margin: 0; font-weight: 100; font-size: clamp(50px, 4.2vw, 82px); text-transform: uppercase; letter-spacing: 0.04em; line-height: 1;">{{ p.name }}</h2>
+          <a href="{{ p.url }}" target="_blank" style="font-size: 15px; font-weight: 300; letter-spacing: 0.1em; margin-top: 8px; color: #8b8b90;" style-hover="color: #f0efec;">[OPEN]</a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 17px; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: #9a9a9e;">
+          <span>{{ p.stack }}</span>
+          <span>Role: {{ p.role }}</span>
+        </div>
+        <p style="margin: 0; font-size: 17px; font-weight: 300; line-height: 1.6; color: #c7c7ca; max-width: 420px; text-wrap: pretty;">{{ p.desc }}</p>
+      </div>
+    </div>
+  </sc-for>
+</section>
+
+<sc-if value="{{ showMoreWork }}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="More Work" style="background: #08080a; color: #f0efec; padding: 120px 40px 140px;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 60px;">
+    <h2 style="margin: 0; font-weight: 100; font-size: clamp(50px, 4.5vw, 80px); text-transform: uppercase; letter-spacing: 0.04em;">More Work</h2>
+    <div style="font-size: 15px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: #9a9a9e;">Industrial / Packaging / Exhibition</div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 32px;">
+    <sc-for list="{{ moreWork }}" as="pg" hint-placeholder-count="6">
+      <a href="{{ pg.url }}" target="_blank" style="display: flex; flex-direction: column; gap: 14px; cursor: pointer; color: #f0efec;" style-hover="opacity: 0.85; color: #f0efec;">
+        <div style="overflow: hidden; aspect-ratio: 16/10;">
+          <img src="{{ pg.img }}" alt="{{ pg.name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);" style-hover="transform: scale(1.05);">
+        </div>
+        <div style="font-size: 18px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase;">{{ pg.name }}</div>
+        <div style="font-size: 14px; font-weight: 300; color: #9a9a9e; line-height: 1.5;">{{ pg.desc }}</div>
+      </a>
+    </sc-for>
+  </div>
+  <div style="text-align: center; margin-top: 90px;">
+    <a href="https://danishamehta.wixsite.com/myportfolio/portfolio" target="_blank" style="font-size: 17px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; border-bottom: 1px solid #f0efec; padding-bottom: 6px; color: #f0efec;" style-hover="color: #9a9a9e; border-color: #9a9a9e;">Explore all work</a>
+  </div>
+</section>
+</sc-if>
+
+<section data-screen-label="About" style="padding: 150px 40px 100px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 80px; align-items: center; max-width: 1500px; margin: 0 auto;">
+  <div>
+    <p style="margin: 0; font-size: clamp(24px, 2.1vw, 36px); font-weight: 300; line-height: 1.45; text-wrap: pretty;">Hello! I am Danisha Mehta, a Product Design graduate from the Royal College of Art, transitioning into Project Management. With extensive experience as a product designer, I bring a deep understanding of user needs and a keen eye for detail — ensuring projects meet functional requirements and resonate emotionally with users.</p>
+    <div style="margin-top: 28px; font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 300; color: #6f6d67; line-height: 1.9;">Emerging Designer of the Year 2024 · Finalist OPPO×RCA 2022 · Gold Medalist, Nirma University · Exhibited at London Design Festival 2022</div>
+    <a href="https://danishamehta.wixsite.com/myportfolio" target="_blank" style="display: inline-block; margin-top: 36px; font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300;">[Know More]</a>
+  </div>
+  <img src="https://static.wixstatic.com/media/a8a034_75001b8a8cbb4f0d922fb051dd08af6d~mv2.jpg/v1/fill/w_600,h_760,al_c,q_85,enc_avif,quality_auto/IMG_4949_JPG.jpg" alt="Danisha Mehta" style="width: 100%; aspect-ratio: 4/5; object-fit: cover;">
+</section>
+
+<section data-screen-label="Experience" style="padding: 60px 40px 120px; max-width: 1500px; margin: 0 auto;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 40px;">
+    <h2 style="margin: 0; font-weight: 200; font-size: clamp(44px, 4vw, 72px); text-transform: uppercase; letter-spacing: 0.03em;">Experience</h2>
+    <div style="font-size: 15px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: #6f6d67;">2018 — Present</div>
+  </div>
+  <div style="display: flex; flex-direction: column;">
+    <sc-for list="{{ experience }}" as="e" hint-placeholder-count="6">
+      <div style="display: grid; grid-template-columns: 220px 1fr 1fr; gap: 24px; align-items: baseline; padding: 22px 0; border-top: 1px dashed #b5b3ad; font-weight: 300;">
+        <div style="font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #6f6d67;">{{ e.dates }}</div>
+        <div style="font-size: 22px; letter-spacing: 0.05em; text-transform: uppercase;">{{ e.org }}</div>
+        <div style="font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: #6f6d67; text-align: right;">{{ e.role }}</div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="Skills" style="padding: 40px 40px 160px; max-width: 1600px; margin: 0 auto;">
+  <div style="font-weight: 200; font-size: clamp(46px, 4.6vw, 86px); line-height: 1.35; text-transform: uppercase; letter-spacing: 0.01em; text-wrap: pretty;">
+    <sc-for list="{{ services }}" as="s" hint-placeholder-count="8">
+      <span style="white-space: nowrap;">{{ s.label }},&nbsp;</span><sc-if value="{{ s.img }}" hint-placeholder-val="{{ false }}"><img src="{{ s.img }}" alt="" style="display: inline-block; height: 0.95em; aspect-ratio: 16/10; object-fit: cover; vertical-align: baseline; margin: 0 0.25em;"></sc-if>
+    </sc-for>
+  </div>
+</section>
+
+<footer data-screen-label="Footer" style="background: #08080a; color: #f0efec; padding: 120px 40px 40px;">
+  <a href="mailto:danishamehta@gmail.com" style="display: block; text-align: center; font-weight: 100; font-size: clamp(60px, 7vw, 130px); text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.05; color: #f0efec;" style-hover="color: #d1310f;">Let's work together <span style="font-size: 0.28em; vertical-align: super; font-weight: 300; letter-spacing: 0.1em;">[contact]</span></a>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 110px; font-size: 15px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; color: #9a9a9e; flex-wrap: wrap; gap: 20px;">
+    <nav style="display: flex; gap: 26px;">
+      <a href="#top" style="color: #9a9a9e;" style-hover="color: #f0efec;">Home</a>
+      <a href="https://danishamehta.wixsite.com/myportfolio/portfolio" target="_blank" style="color: #9a9a9e;" style-hover="color: #f0efec;">Portfolio</a>
+      <a href="https://danishamehta.wixsite.com/myportfolio" target="_blank" style="color: #9a9a9e;" style-hover="color: #f0efec;">Experience</a>
+      <a href="https://danishamehta.wixsite.com/myportfolio" target="_blank" style="color: #9a9a9e;" style-hover="color: #f0efec;">Professional</a>
+      <a href="https://danishamehta.wixsite.com/myportfolio" target="_blank" style="color: #9a9a9e;" style-hover="color: #f0efec;">About me</a>
+    </nav>
+    <a href="mailto:danishamehta@gmail.com" style="color: #9a9a9e; text-transform: none;" style-hover="color: #f0efec;">danishamehta@gmail.com</a>
+    <div style="display: flex; gap: 26px; align-items: center;">
+      <a href="http://linkedin.com/in/danisha-mehta-9488b4183" target="_blank" style="color: #9a9a9e;" style-hover="color: #f0efec;">LinkedIn</a>
+      <a href="http://be.net/danishamehta14" target="_blank" style="color: #9a9a9e;" style-hover="color: #f0efec;">Behance</a>
+      <span>LDN — {{ clockFull }}</span>
+    </div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;tagCycleSeconds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:2.5,&quot;min&quot;:1,&quot;max&quot;:6,&quot;step&quot;:0.5,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;showMoreWork&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;}}">
+class Component extends DCLogic {
+  state = { menuOpen: false, tagIndex: 0, hoverNav: 0, now: new Date() };
+  componentDidMount() {
+    this._clock = setInterval(() => this.setState({ now: new Date() }), 1000);
+    this._startTagCycle();
+  }
+  _startTagCycle() {
+    clearInterval(this._tag);
+    const speed = (this.props.tagCycleSeconds ?? 2.5) * 1000;
+    this._tag = setInterval(() => this.setState(s => ({ tagIndex: (s.tagIndex + 1) % 4 })), speed);
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.tagCycleSeconds !== this.props.tagCycleSeconds) this._startTagCycle();
+  }
+  componentWillUnmount() { clearInterval(this._clock); clearInterval(this._tag); }
+  renderVals() {
+    const W = 'https://static.wixstatic.com/media/';
+    const img = (id, w, h, f) => W + id + '/v1/fill/w_' + w + ',h_' + h + ',al_c,q_85,enc_avif,quality_auto/' + (f || 'img.jpg');
+    const S = 'https://danishamehta.wixsite.com/myportfolio';
+    const tags = [
+      { img: img('a8a034_fa0626b7a275444b9d7c18e589f46125~mv2.jpg', 900, 600), label: 'Emerging Designer of the Year 2024' },
+      { img: img('a8a034_9f9e865942f04a849309f848c08a5bcc~mv2.jpg', 900, 600), label: 'RCA Graduate 2023' },
+      { img: img('a8a034_f3633396872241879ae3e25f5696921a~mv2.jpg', 900, 600), label: 'OPPO\u00d7RCA Finalist 2022' },
+      { img: img('a8a034_3645affee52448f9a4b5b42df30e4f28~mv2.jpg', 900, 600), label: 'Gold Medalist, Nirma University' },
+    ];
+    const navDefs = [
+      { label: 'Home', href: '#top', img: img('a8a034_fa0626b7a275444b9d7c18e589f46125~mv2.jpg', 960, 540) },
+      { label: 'Portfolio', href: S + '/portfolio', img: img('a8a034_9f9e865942f04a849309f848c08a5bcc~mv2.jpg', 960, 540) },
+      { label: 'Professional', href: S, img: img('a8a034_f3633396872241879ae3e25f5696921a~mv2.jpg', 960, 540) },
+      { label: 'Experience', href: S, img: img('a8a034_3645affee52448f9a4b5b42df30e4f28~mv2.jpg', 960, 540) },
+      { label: 'About me', href: S, img: img('a8a034_75001b8a8cbb4f0d922fb051dd08af6d~mv2.jpg', 960, 540, 'IMG_4949_JPG.jpg') },
+      { label: 'Contact', href: 'mailto:danishamehta@gmail.com', img: img('a8a034_17eb7d83ba254540bf61cd40e63a3ee0~mv2.jpg', 960, 540) },
+    ];
+    const tz = { timeZone: 'Europe/London', hour12: false };
+    const tag = tags[this.state.tagIndex];
+    return {
+      menuOpen: this.state.menuOpen,
+      menuClosed: !this.state.menuOpen,
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen, hoverNav: 0 })),
+      menuImg: navDefs[this.state.hoverNav].img,
+      navItems: navDefs.map((n, i) => ({
+        ...n,
+        color: i === this.state.hoverNav ? '#111' : '#a5a39c',
+        onHover: () => this.setState({ hoverNav: i }),
+        onClick: (e) => { if (n.href.startsWith('#')) { this.setState({ menuOpen: false }); } },
+      })),
+      tagImg: tag.img, tagLabel: tag.label,
+      clock: this.state.now.toLocaleTimeString('en-GB', { ...tz, hour: '2-digit', minute: '2-digit' }),
+      clockFull: this.state.now.toLocaleTimeString('en-GB', tz),
+      showMoreWork: this.props.showMoreWork ?? true,
+      projects: [
+        { name: 'SenseIT', url: S + '/s-projects-basic', stack: 'OPPO\u00d7RCA, Inclusive Tech', role: 'Product Design & Research',
+          desc: 'A tactile system helping visually impaired users navigate on-screen information and give feedback without relying on voice assistance. Exhibited at the London Design Festival 2022.',
+          bg: img('a8a034_fa0626b7a275444b9d7c18e589f46125~mv2.jpg', 1600, 1000), shot: img('a8a034_8b1200cf612e42e28c6cca149313f30e~mv2.png', 1200, 800, 'img.png') },
+        { name: 'Swoosh', url: S + '/swoosh-project', stack: 'Toy Design, Mechanical', role: 'Product Design',
+          desc: 'A simple mechanical toy for kids aged 3\u20135, inspired by ball bearings and the magic car \u2014 developed through three working prototypes and tested with real users.',
+          bg: img('a8a034_9f9e865942f04a849309f848c08a5bcc~mv2.jpg', 1600, 1200), shot: img('a8a034_8894daee7bd9454e95ecea4b99bf164a~mv2.png', 1200, 860, 'img.png') },
+        { name: 'FIFI', url: S + '/fifi-project', stack: 'Smart Toy, Arduino & IoT', role: 'Product & UX Design',
+          desc: 'A glowing companion toy that runs away from toddlers \u2014 IR sensors, Neopixel lighting and an IoT app to control colour and movement, inspired by Tom & Jerry.',
+          bg: img('a8a034_f3633396872241879ae3e25f5696921a~mv2.jpg', 1600, 1000), shot: img('a8a034_201cab9e56bc4b3aa3edb7f4994b636b~mv2.png', 1200, 850, 'img.png') },
+        { name: 'Piggy Bank', url: S + '/sketches', stack: 'Interactive Product, Arduino', role: 'Product Design',
+          desc: 'Reimagining the piggy bank as a 21st-century interactive companion \u2014 automatic coin segregation, note collection and an LCD display teaching kids money management.',
+          bg: img('a8a034_3645affee52448f9a4b5b42df30e4f28~mv2.jpg', 1600, 1000), shot: img('a8a034_5cebbb17c90c4f1686b887c4ad337fbc~mv2.jpg', 1200, 900) },
+      ],
+      moreWork: [
+        { name: 'Bamboo Project', url: S + '/projects-6', desc: 'Exploring bamboo as a sustainable material for product design', img: img('a8a034_7e726b3e41e64f6a8ce892a608bc7cab~mv2.jpg', 960, 600) },
+        { name: 'Portable Camera', url: S + '/s-projects-side-by-side', desc: 'Industrial design of a compact portable camera', img: img('a8a034_5a9801da1ea84d4080390d144c953e9d~mv2.jpg', 960, 600) },
+        { name: 'Packaging Design', url: S + '/packaging-project', desc: 'Structural and graphic packaging exploration', img: img('a8a034_17eb7d83ba254540bf61cd40e63a3ee0~mv2.jpg', 960, 600) },
+        { name: 'Photo Story', url: S + '/photography-project', desc: 'A narrative photography series', img: img('a8a034_e70e3193fcb54da793a7834a73b3c546~mv2.jpg', 960, 600) },
+        { name: 'Game Design', url: S + '/game-design', desc: 'Designing play \u2014 rules, pieces and interaction', img: img('a8a034_baf0238866104918b7278ef2332a02c3~mv2.jpg', 960, 600) },
+        { name: 'Exhibition Design', url: S + '/exhibition-design', desc: 'Spatial storytelling and exhibition layouts', img: img('a8a034_8f4d8614e22249538576320c3c0f18b6~mv2.png', 960, 600, 'img.png') },
+      ],
+      experience: [
+        { dates: 'Nov 2024 \u2014 Present', org: 'Web Designer \u00b7 London', role: 'Web Design & Automation' },
+        { dates: 'Oct 2023 \u2014 Oct 2024', org: 'ONELAB College \u00b7 London', role: 'Curriculum Lead & Design Instructor' },
+        { dates: 'Aug 2023', org: 'BigShots / Costa Coffee \u00b7 London', role: 'Graphic & Digital Content, Freelance' },
+        { dates: 'Aug 2022', org: 'ArryBarry Warehouse \u00b7 London', role: 'Graphic Design, Freelance' },
+        { dates: 'Jan 2021 \u2014 Jun 2021', org: 'Inovora India Design Studio', role: 'Product Design Intern' },
+        { dates: 'Mar 2020 \u2014 Jul 2020', org: 'D-Breath \u00b7 Ahmedabad', role: 'Product Design Lead' },
+        { dates: 'Jun 2020 \u2014 Aug 2020', org: 'Bracket Innovation \u00b7 Ahmedabad', role: 'Product Design Intern' },
+        { dates: 'Jun 2019 \u2014 Jul 2019', org: 'Agastya International Foundation', role: 'Product Design Intern' },
+      ],
+      services: [
+        { label: 'Product Design', img: img('a8a034_8894daee7bd9454e95ecea4b99bf164a~mv2.png', 640, 400, 'img.png') },
+        { label: 'Industrial Design', img: null },
+        { label: 'UI / UX', img: img('a8a034_201cab9e56bc4b3aa3edb7f4994b636b~mv2.png', 640, 400, 'img.png') },
+        { label: 'Web Design', img: null },
+        { label: 'Project Management', img: img('a8a034_17eb7d83ba254540bf61cd40e63a3ee0~mv2.jpg', 640, 400) },
+        { label: 'Packaging', img: null },
+        { label: 'Model Making', img: img('a8a034_70d57ff60a16425b80aef6ef04f71a57~mv2.jpg', 640, 400) },
+        { label: 'Arduino & IoT', img: null },
+        { label: 'Wearable Tech', img: img('a8a034_5a9801da1ea84d4080390d144c953e9d~mv2.jpg', 640, 400) },
+        { label: 'Exhibition Design', img: null },
+        { label: 'Sketching', img: img('a8a034_e70e3193fcb54da793a7834a73b3c546~mv2.jpg', 640, 400) },
+        { label: 'Photography', img: null },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
