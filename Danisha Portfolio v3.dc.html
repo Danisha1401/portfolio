@@ -17,15 +17,257 @@ body { font-family: 'Josefin Sans', sans-serif; }
 a { color: inherit; text-decoration: none; }
 a:hover { color: #d1310f; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---------- skill glyphs ----------
+   One mark per skill, 1px strokes, drawn on when the chip enters view and
+   animated again on hover. Each motion is written for its own word. */
+.skchip { display: inline-flex; align-items: center; gap: 9px; }
+.skg { width: 24px; height: 24px; flex: 0 0 auto; overflow: visible;
+       fill: none; stroke: currentColor; stroke-width: 1.55;
+       stroke-linecap: round; stroke-linejoin: round; }
+/* undrawn until the chip enters view */
+.skg path { stroke-dasharray: 100; stroke-dashoffset: 100; }
+/* resting state is static, never the tail of an animation */
+.skchip.is-in .skg path { stroke-dasharray: none; stroke-dashoffset: 0;
+  animation: skdraw .7s cubic-bezier(.65,0,.35,1) backwards;
+  animation-delay: calc(var(--i, 0) * 55ms); }
+@keyframes skdraw {
+  from { stroke-dasharray: 100; stroke-dashoffset: 100; }
+  99%  { stroke-dasharray: 100; stroke-dashoffset: 0; }
+  to   { stroke-dasharray: none; stroke-dashoffset: 0; }
+}
+
+/* the bespoke motion: twice on entry, continuously while hovered.
+   No fill mode, so it always falls back to the static resting state. */
+.skchip.is-in .skg path[class*="m-"] {
+  animation: skdraw .7s cubic-bezier(.65,0,.35,1) backwards,
+             var(--m) 1.7s calc(var(--i, 0) * 55ms + .7s) ease-in-out 2; }
+.skchip:hover .skg path { stroke-dasharray: none; stroke-dashoffset: 0; }
+.skchip:hover .skg path[class*="m-"] { animation: var(--m) 1.4s ease-in-out infinite; }
+
+/* AI & automation */
+.m-flow   { --m: skflow; }      @keyframes skflow { 0% { stroke-dasharray: 8 100; stroke-dashoffset: 100; } 92% { stroke-dasharray: 8 100; stroke-dashoffset: -8; } 100% { stroke-dasharray: none; stroke-dashoffset: 0; } }
+.m-type   { --m: sktype; transform-origin: 10px 16px; }  @keyframes sktype { 0% { transform: scaleX(.1); } 60%, 100% { transform: scaleX(1); } }
+.m-caret  { --m: skcaret; }     @keyframes skcaret { 0%, 20% { opacity: 1; } 35%, 60% { opacity: .12; } 75%, 100% { opacity: 1; } }
+.m-snap   { --m: sksnap; }      @keyframes sksnap { 0% { transform: scale(.2); opacity: .2; } 55%, 100% { transform: scale(1); opacity: 1; } }
+.m-fill   { --m: skfill; transform-origin: left center; } @keyframes skfill { 0% { transform: scaleX(0); } 70%, 100% { transform: scaleX(1); } }
+.m-zap    { --m: skzap; }       @keyframes skzap { 0%, 100% { opacity: 1; } 30%, 45% { opacity: .2; } }
+.m-pulseA { --m: skpulseA; transform-origin: 5px 12px; }  @keyframes skpulseA { 0%, 100% { transform: scale(1); } 35% { transform: scale(1.28); } }
+.m-pulseB { --m: skpulseB; transform-origin: 19px 12px; } @keyframes skpulseB { 0%, 100% { transform: scale(1); } 75% { transform: scale(1.28); } }
+.m-stackB { --m: skstackB; }    @keyframes skstackB { 0% { transform: translateY(-5px); opacity: 0; } 60%, 100% { transform: none; opacity: 1; } }
+.m-stackC { --m: skstackC; }    @keyframes skstackC { 0%, 25% { transform: translateY(-7px); opacity: 0; } 80%, 100% { transform: none; opacity: 1; } }
+.m-orbit  { --m: skorbit; transform-origin: 12px 13px; }  @keyframes skorbit { to { transform: rotate(360deg); } }
+
+/* Code & front-end */
+.m-partL  { --m: skpartL; }     @keyframes skpartL { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-2.2px); } }
+.m-partR  { --m: skpartR; }     @keyframes skpartR { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(2.2px); } }
+.m-drip   { --m: skdrip; }      @keyframes skdrip { 0% { transform: translateY(-3px); } 55% { transform: translateY(0); } 70% { transform: translateY(0) scaleY(.9); } 100% { transform: none; } }
+.m-coil   { --m: skcoil; transform-origin: 12px 12px; }   @keyframes skcoil { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(180deg); } }
+.m-blink  { --m: skblink; }     @keyframes skblink { 0%, 100% { opacity: 1; } 45% { opacity: .15; } }
+.m-flowline { --m: skflowline; } @keyframes skflowline { 0% { stroke-dasharray: 6 60; stroke-dashoffset: 60; } 92% { stroke-dasharray: 6 60; stroke-dashoffset: -6; } 100% { stroke-dasharray: none; stroke-dashoffset: 0; } }
+.m-click  { --m: skclick; transform-origin: 18px 13px; }  @keyframes skclick { 0%, 100% { transform: none; } 45% { transform: translate(-1.5px, -1.5px) scale(.82); } }
+
+/* Product & UX */
+.m-shuffleA { --m: skshufA; }   @keyframes skshufA { 0%, 100% { transform: none; } 50% { transform: translateY(5.5px); } }
+.m-shuffleB { --m: skshufB; }   @keyframes skshufB { 0%, 100% { transform: none; } 50% { transform: translateY(-1.5px) scaleY(.72); } }
+.m-scan   { --m: skscan; }      @keyframes skscan { 0%, 100% { transform: translate(0, 0); } 30% { transform: translate(3.5px, 2px); } 65% { transform: translate(-3px, -1.5px); } }
+.m-advance { --m: skadv; }      @keyframes skadv { 0%, 100% { transform: none; opacity: 1; } 35% { transform: translateX(-2.4px); opacity: .35; } 70% { transform: translateX(2.4px); opacity: 1; } }
+.m-splitR { --m: sksplitR; }    @keyframes sksplitR { 0%, 100% { transform: none; } 50% { transform: translate(3px, -2px); } }
+.m-splitL { --m: sksplitL; }    @keyframes sksplitL { 0%, 100% { transform: none; } 50% { transform: translate(-3px, 1.5px); } }
+.m-splitD { --m: sksplitD; }    @keyframes sksplitD { 0%, 100% { transform: none; } 50% { transform: translate(1.5px, 3px); } }
+.m-xspin  { --m: skxspin; transform-origin: 11px 12.5px; } @keyframes skxspin { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(90deg); } }
+
+/* Ecommerce & digital systems */
+.m-lift   { --m: sklift; }      @keyframes sklift { 0%, 100% { transform: none; } 50% { transform: translateY(-2.5px); } }
+.m-roll   { --m: skroll; }      @keyframes skroll { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
+.m-drop   { --m: skdrop; }      @keyframes skdrop { 0% { transform: translateY(-3px); opacity: 0; } 25% { opacity: 1; } 75% { transform: translateY(9px); opacity: 0; } 76% { transform: translateY(-3px); opacity: 0; } 100% { transform: none; opacity: 1; } }
+.m-bend   { --m: skbend; transform-origin: 9px 6px; }     @keyframes skbend { 0%, 100% { transform: none; } 50% { transform: skewY(-7deg); } }
+.m-grab   { --m: skgrab; }      @keyframes skgrab { 0%, 100% { transform: none; } 50% { transform: translateY(-3px); } }
+
+/* Design & technical */
+.m-extrude { --m: skext; }      @keyframes skext { 0%, 100% { transform: none; } 50% { transform: translate(2px, -2px); } }
+.m-dim    { --m: skdim; transform-origin: center; }       @keyframes skdim { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(.82); } }
+.m-dimL   { --m: skdimL; }      @keyframes skdimL { 0%, 100% { transform: none; } 50% { transform: translateX(1.6px); } }
+.m-dimR   { --m: skdimR; }      @keyframes skdimR { 0%, 100% { transform: none; } 50% { transform: translateX(-1.6px); } }
+.m-litsphere { --m: sklit; }    @keyframes sklit { 0%, 100% { stroke-dasharray: none; stroke-dashoffset: 0; } 50% { stroke-dasharray: 62 100; stroke-dashoffset: -8; } }
+.m-ray    { --m: skray; }       @keyframes skray { 0%, 100% { opacity: 1; transform: none; } 50% { opacity: .3; transform: translate(-1.8px, 1.8px); } }
+.m-shadow { --m: skshadow; transform-origin: 12px 20.5px; } @keyframes skshadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(.62); opacity: .55; } }
+.m-depth  { --m: skdepth; }     @keyframes skdepth { 0%, 100% { transform: none; opacity: 1; } 50% { transform: translate(3px, -3px); opacity: .35; } }
+.m-signal { --m: sksignal; }    @keyframes sksignal { 0% { stroke-dasharray: 10 100; stroke-dashoffset: 100; } 92% { stroke-dasharray: 10 100; stroke-dashoffset: -10; } 100% { stroke-dasharray: none; stroke-dashoffset: 0; } }
+.m-cycA   { --m: skcycA; }      @keyframes skcycA { 0%, 100% { opacity: 1; } 40% { opacity: .25; } }
+.m-cycB   { --m: skcycB; }      @keyframes skcycB { 0%, 100% { opacity: 1; } 15%, 70% { opacity: .3; } }
+.m-cycC   { --m: skcycC; }      @keyframes skcycC { 0%, 100% { opacity: 1; } 25%, 55% { opacity: .35; } }
+.m-nib    { --m: sknib; transform-origin: 8px 19px; }     @keyframes sknib { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-11deg); } }
+.m-strokeon { --m: skstrokeon; transform-origin: left center; } @keyframes skstrokeon { 0% { transform: scaleX(0); } 70%, 100% { transform: scaleX(1); } }
+
+/* Making & tools */
+.m-assyB  { --m: skassyB; }     @keyframes skassyB { 0% { transform: translateY(-4px); opacity: .2; } 60%, 100% { transform: none; opacity: 1; } }
+.m-assyC  { --m: skassyC; }     @keyframes skassyC { 0%, 20% { transform: translateY(-7px); opacity: .2; } 85%, 100% { transform: none; opacity: 1; } }
+.m-beam   { --m: skbeam; transform-origin: 12px 1px; }    @keyframes skbeam { 0% { transform: scaleY(.12); opacity: .25; } 55% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 1; } }
+.m-cutpath { --m: skcut; }      @keyframes skcut { 0% { stroke-dasharray: 100; stroke-dashoffset: 100; } 65% { stroke-dasharray: 100; stroke-dashoffset: 0; } 100% { stroke-dasharray: none; stroke-dashoffset: 0; } }
+.m-head   { --m: skhead; }      @keyframes skhead { 0%, 100% { transform: translateX(-2.5px); } 50% { transform: translateX(2.5px); } }
+.m-ink1   { --m: skink; }       @keyframes skink { 0%, 15% { opacity: 0; } 30%, 100% { opacity: 1; } }
+.m-ink2   { --m: skink2; }      @keyframes skink2 { 0%, 40% { opacity: 0; } 60%, 100% { opacity: 1; } }
+.m-ink3   { --m: skink3; }      @keyframes skink3 { 0%, 65% { opacity: 0; } 85%, 100% { opacity: 1; } }
+.m-sw1    { --m: sksw1; }       @keyframes sksw1 { 0%, 100% { opacity: 1; } 45% { opacity: .25; } }
+.m-sw2    { --m: sksw2; }       @keyframes sksw2 { 0%, 100% { opacity: 1; } 20%, 65% { opacity: .3; } }
+.m-sw3    { --m: sksw3; }       @keyframes sksw3 { 0%, 100% { opacity: 1; } 40%, 85% { opacity: .35; } }
+.m-foldc  { --m: skfold; transform-origin: 15px 3px; }    @keyframes skfold { 0%, 100% { transform: none; } 50% { transform: rotate(-14deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .skg path, .skchip.is-in .skg path, .skchip:hover .skg path[class*="m-"] { animation: none !important; stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
+}
+@media (max-width: 760px) { .skg { width: 21px; height: 21px; } .skchip { gap: 7px; } }
+
+/* ---------- responsive layer ----------
+   Styles in this file are inline, so class/media rules lose on specificity.
+   These selectors match the inline signature and use !important to win.
+   Desktop (>1024px) is untouched. */
+html, body { overflow-x: hidden; max-width: 100%; }
+img { max-width: 100%; }
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ---------- tablet ---------- */
+@media (min-width: 761px) and (max-width: 1024px) {
+  [style*="repeat(4, 1fr)"] { grid-template-columns: repeat(2, 1fr) !important; }
+  [style*="grid-template-columns: 1.3fr 1fr"],
+  [style*="grid-template-columns: 1.4fr 1fr"],
+  [style*="grid-template-columns: 1.2fr 1fr"] { grid-template-columns: 1fr !important; gap: 40px !important; }
+  [style*="grid-template-columns: 340px 1fr"],
+  [style*="grid-template-columns: 300px 1fr"] { grid-template-columns: 1fr !important; gap: 14px !important; }
+  #services > div:last-child { grid-template-columns: repeat(2, 1fr) !important; }
+  [style*="padding: 130px 40px"], [style*="padding: 140px 40px"] { padding-left: 28px !important; padding-right: 28px !important; }
+}
+
+/* ---------- narrow desktop / tablet: header nav is too cramped ---------- */
+@media (max-width: 900px) {
+  header > nav, [style*="justify-self: center"] { display: none !important; }
+  header, [style*="grid-template-columns: 1fr auto 1fr"] { grid-template-columns: 1fr auto !important; }
+  /* hero footer labels collide at this width */
+  #top > div[style*="bottom: 4%"][style*="left: 33%"] { left: auto !important; right: 40px !important; }
+  /* shrink the floating hero art so the eyebrow label stays readable */
+  #top [style*="translate(-50%, -60%)"] img { width: 250px !important; }
+}
+
+/* ---------- mobile ---------- */
+@media (max-width: 760px) {
+  /* header + sticky bars */
+  header, [style*="padding: 15px 40px"] { padding: 12px 18px !important; }
+  header > nav, [style*="justify-self: center"] { display: none !important; }
+  header { grid-template-columns: 1fr auto !important; gap: 12px !important; }
+
+  /* full-bleed menu overlay */
+  [style*="padding: 96px 5vw 40px"] {
+    display: block !important; padding: 84px 20px 32px !important;
+  }
+  /* the menu preview panel is a hover affordance — no hover on touch */
+  [style*="padding: 96px 5vw 40px"] > div:last-child { display: none !important; }
+  [style*="padding: 96px 5vw 40px"] > div:first-child { min-height: 0 !important; }
+
+  /* hero */
+  #top { height: auto !important; min-height: 0 !important; padding: 96px 0 44px !important; }
+  #top > div[style*="left: 50%"][style*="bottom: 0"] { display: none !important; }
+  #top > div[style*="top: 41%"][style*="right: 0"] { display: none !important; }
+  #top > div[style*="left: 40px"][style*="top: 38.5%"] { position: static !important; padding: 0 20px 22px !important; }
+  #top > div[style*="top: 41%"][style*="translate(-50%, -60%)"] {
+    position: static !important; transform: none !important; left: auto !important; top: auto !important;
+    padding: 0 20px; text-align: left !important;
+  }
+  #top > div[style*="translate(-50%, -60%)"] img { width: 100% !important; max-width: 420px; }
+  #top > h1 { position: static !important; padding: 34px 20px 0 !important; font-size: clamp(38px, 11vw, 62px) !important; }
+  #top > h1 > span { text-align: left !important; }
+  #top > div[style*="bottom: 4%"] { position: static !important; padding: 24px 20px 0 !important; left: auto !important; }
+
+  /* section padding */
+  #services, #skills, #experience { padding-left: 20px !important; padding-right: 20px !important; padding-top: 70px !important; }
+  #about { padding: 70px 20px 0 !important; }
+  footer, [style*="padding: 120px 40px 140px"] { padding-left: 20px !important; padding-right: 20px !important; }
+  footer nav { flex-wrap: wrap !important; gap: 14px 18px !important; }
+  footer > div:last-child { align-items: flex-start !important; margin-top: 56px !important; gap: 16px !important; }
+  footer > div:last-child > div:last-child { flex-wrap: wrap !important; gap: 14px 18px !important; }
+
+  /* every multi-column grid collapses */
+  [style*="repeat(4, 1fr)"], [style*="repeat(3, 1fr)"], [style*="repeat(2, 1fr)"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: 340px 1fr"],
+  [style*="grid-template-columns: 300px 1fr"] { grid-template-columns: 1fr !important; gap: 14px !important; }
+  [style*="grid-template-columns: 1.3fr 1fr"],
+  [style*="grid-template-columns: 1.4fr 1fr"],
+  [style*="grid-template-columns: 1.2fr 1fr"] { grid-template-columns: 1fr !important; gap: 30px !important; }
+  [style*="grid-template-columns: 1fr auto 1fr"] { grid-template-columns: 1fr auto !important; }
+
+  /* imported SenseIT case study */
+  [style*="grid-template-columns: 1.5fr 1fr"],
+  [style*="grid-template-columns: 1.45fr 1fr"],
+  [style*="grid-template-columns: auto 1fr"] { grid-template-columns: 1fr !important; gap: 30px !important; }
+  [style*="grid-template-columns: 44px 1fr"] { gap: 12px !important; }
+  [style*="padding: 110px 40px 0"], [style*="padding: 110px 40px 40px"],
+  [style*="padding: 40px 40px 0"], [style*="padding: 130px 40px"], [style*="padding: 140px 40px"] {
+    padding-left: 20px !important; padding-right: 20px !important; padding-top: 64px !important;
+  }
+  [style*="height: 66vh"] { height: 46vh !important; min-height: 0 !important; }
+  [style*="height: 66vh"] + div, [style*="height: 66vh"] ~ div[style*="padding: 40px"] { padding: 22px !important; }
+  [style*="font-size: clamp(70px, 8vw, 160px)"] { font-size: clamp(44px, 13vw, 70px) !important; }
+  [style*="repeat(2, 92px)"] { grid-template-columns: repeat(2, 68px) !important; grid-template-rows: repeat(3, 68px) !important; }
+  [style*="font-size: 42px"] { font-size: 28px !important; }
+  /* sticky side columns overlap once stacked */
+  [style*="position: sticky"][style*="top: 40px"] { position: static !important; }
+  [style*="grid-template-columns: 230px 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 6px !important; }
+  [style*="grid-template-columns: 230px 1fr 1fr"] > div:last-child { text-align: left !important; }
+  [style*="grid-template-columns: 46px 1fr auto"] { grid-template-columns: 34px 1fr !important; gap: 12px !important; }
+  [style*="grid-template-columns: 46px 1fr auto"] > span:last-child { display: none !important; }
+
+  /* services cards */
+  #services [style*="min-height: 400px"] { min-height: 0 !important; padding: 30px 24px 28px !important; }
+
+  /* work: sticky stack becomes image over text */
+  #work > div[style*="position: sticky"] { height: 100svh !important; min-height: 0 !important; }
+  #work [style*="grid-template-columns: 1.45fr 1fr"] {
+    grid-template-columns: 1fr !important; grid-template-rows: 1.05fr 1fr !important;
+  }
+  #work [style*="padding: 26px 40px 20px"] { padding: 14px 18px 12px !important; flex-wrap: wrap !important; }
+  #work [style*="padding: 26px 40px 20px"] > div:last-child { display: none !important; }
+  #work [style*="padding: 11px 20px"] { padding: 8px 12px !important; font-size: 11px !important; letter-spacing: 0.1em !important; }
+  #work [style*="padding: 60px 50px"] { padding: 20px 18px 24px !important; gap: 12px !important; }
+  #work [style*="padding: 60px 50px"] h2 { font-size: clamp(28px, 8vw, 40px) !important; }
+  #work [style*="padding: 60px 50px"] p { font-size: 15px !important; }
+  #work [style*="padding: 44px"] { padding: 22px !important; }
+  #work [style*="font-size: 66px"] { font-size: 34px !important; }
+
+  /* page + detail overlays */
+  [style*="padding: 60px 40px 0"], [style*="padding: 70px 40px 0"] { padding: 34px 20px 0 !important; }
+  [style*="padding: 0 40px"] { padding-left: 20px !important; padding-right: 20px !important; }
+  [style*="height: 64vh"] { height: 42vh !important; }
+  [style*="height: 56vh"] { height: auto !important; min-height: 0 !important; padding: 28px 20px !important; gap: 22px !important; }
+  [style*="height: 70vh"] { height: 70svh !important; min-height: 0 !important; }
+  [style*="flex: 0 0 68%"] { flex: 0 0 86% !important; }
+  [style*="text-align: right"] { text-align: left !important; }
+  [style*="margin-top: 110px"] { margin-top: 60px !important; }
+  [style*="margin-top: 100px"], [style*="margin-top: 90px"] { margin-top: 56px !important; }
+
+  /* type scale */
+  [style*="font-size: clamp(60px, 7vw, 140px)"] { font-size: clamp(40px, 12vw, 62px) !important; }
+  [style*="font-size: clamp(60px, 6.6vw, 132px)"] { font-size: clamp(38px, 11vw, 58px) !important; }
+  [style*="font-size: clamp(56px, 6.6vw, 124px)"] { font-size: clamp(34px, 10vw, 54px) !important; }
+  [style*="font-size: clamp(70px, 8vw, 150px)"] { font-size: clamp(40px, 12vw, 64px) !important; }
+  [style*="font-size: clamp(44px, 4.2vw, 76px)"], [style*="font-size: clamp(46px, 4.2vw, 76px)"] { font-size: clamp(30px, 8.5vw, 46px) !important; }
+  [style*="font-size: clamp(34px, 3vw, 56px)"] { font-size: clamp(26px, 7.5vw, 38px) !important; }
+  [style*="font-size: clamp(40px, 4.2vw, 76px)"] { font-size: clamp(30px, 9vw, 46px) !important; }
+}
+
+/* touch devices: the cursor-following hero art has nothing to follow */
+@media (hover: none) {
+  #top [style*="will-change: left, top"] { transition: none; }
+}
+
 </style>
 </helmet>
-<div style="background: #f0efec; color: #111; min-width: 1100px;">
+<div style="background: #f0efec; color: #111; min-width: 0;">
 
 <header style="position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 30px; padding: 15px 40px; box-sizing: border-box; background: rgba(240,239,236,0.6); backdrop-filter: blur(22px) saturate(1.7); -webkit-backdrop-filter: blur(22px) saturate(1.7); border-bottom: 1px solid rgba(17,17,17,0.08); box-shadow: 0 1px 40px rgba(0,0,0,0.06); color: #111;">
-  <a href="#top" onClick="{{ goHome }}" style="justify-self: start; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; color: #111;" style-hover="color: #d1310f;">DM</a>
+  <a href="#top" onClick="{{ goHome }}" style="justify-self: start; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; color: #111;" style-hover="color: #d1310f !important;">DM</a>
   <nav style="justify-self: center; display: flex; gap: 28px;">
     <sc-for list="{{ headerNav }}" as="h" hint-placeholder-count="6">
-      <a href="{{ h.href }}" onClick="{{ h.onClick }}" style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; color: #46443f;" style-hover="color: #d1310f;">{{ h.label }}</a>
+      <a href="{{ h.href }}" onClick="{{ h.onClick }}" style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; color: #46443f;" style-hover="color: #d1310f !important;">{{ h.label }}</a>
     </sc-for>
   </nav>
   <div onClick="{{ toggleMenu }}" style="justify-self: end; cursor: pointer; width: 44px; height: 44px; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 7px;">
@@ -45,7 +287,7 @@ a:hover { color: #d1310f; }
       <div style="font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 300; color: #8a887f;">Menu — Danisha Mehta</div>
       <nav style="display: flex; flex-direction: column; margin-top: 20px;">
         <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="7">
-          <a href="{{ nav.href }}" onClick="{{ nav.onClick }}" onMouseEnter="{{ nav.onHover }}" style="display: grid; grid-template-columns: 46px 1fr auto; align-items: baseline; gap: 20px; border-top: 1px dashed #cfcdc7; padding: 11px 0; color: #111;" style-hover="color: #d1310f;">
+          <a href="{{ nav.href }}" onClick="{{ nav.onClick }}" onMouseEnter="{{ nav.onHover }}" style="display: grid; grid-template-columns: 46px 1fr auto; align-items: baseline; gap: 20px; border-top: 1px dashed #cfcdc7; padding: 11px 0; color: #111;" style-hover="color: #d1310f !important;">
             <span style="font-size: 12px; letter-spacing: 0.14em; font-weight: 300; color: #8a887f;">{{ nav.num }}</span>
             <span style="font-size: clamp(26px, 2.9vw, 46px); font-weight: 200; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.04;">{{ nav.label }}</span>
             <span style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; color: #8a887f;">{{ nav.meta }}</span>
@@ -92,7 +334,7 @@ a:hover { color: #d1310f; }
   </div>
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 44px;">
     <sc-for list="{{ services }}" as="sv" hint-placeholder-count="3">
-      <div onClick="{{ sv.select }}" style="cursor: pointer; background: {{ sv.bg }}; color: {{ sv.color }}; padding: 40px 36px 36px; display: flex; flex-direction: column; gap: 22px; min-height: 400px; transition: background 0.35s, color 0.35s, transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s;" style-hover="background: #111; color: #f0efec; transform: translateY(-8px); box-shadow: 0 30px 60px rgba(0,0,0,0.18);">
+      <div onClick="{{ sv.select }}" style="cursor: pointer; background: {{ sv.bg }}; color: {{ sv.color }}; padding: 40px 36px 36px; display: flex; flex-direction: column; gap: 22px; min-height: 400px; transition: background 0.35s, color 0.35s, transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s;" style-hover="background: #111 !important; color: #f0efec !important; transform: translateY(-8px) !important; box-shadow: 0 30px 60px rgba(0,0,0,0.18) !important;">
         <div style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; opacity: 0.7;">{{ sv.index }}</div>
         <h3 style="margin: 0; font-weight: 200; font-size: clamp(30px, 2.5vw, 44px); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.05;">{{ sv.title }}</h3>
         <p style="margin: 0; font-size: 17px; font-weight: 300; line-height: 1.6; opacity: 0.85; text-wrap: pretty;">{{ sv.blurb }}</p>
@@ -150,14 +392,14 @@ a:hover { color: #d1310f; }
         <div style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; color: #d1310f;">{{ activeCat }}</div>
         <div style="display: flex; align-items: flex-start; gap: 14px;">
           <h2 style="margin: 0; font-weight: 100; font-size: clamp(46px, 3.8vw, 74px); text-transform: uppercase; letter-spacing: 0.04em; line-height: 1;">{{ activeName }}</h2>
-          <span onClick="{{ openActive }}" style="font-size: 15px; font-weight: 300; letter-spacing: 0.1em; margin-top: 8px; color: #8b8b90; cursor: pointer;" style-hover="color: #f0efec;">[OPEN]</span>
+          <span onClick="{{ openActive }}" style="font-size: 15px; font-weight: 300; letter-spacing: 0.1em; margin-top: 8px; color: #8b8b90; cursor: pointer;" style-hover="color: #f0efec !important;">[OPEN]</span>
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: #9a9a9e;">
           <span>{{ activeStack }}</span>
           <span>Role: {{ activeRole }}</span>
         </div>
         <p style="margin: 0; font-size: 17px; font-weight: 300; line-height: 1.6; color: #c7c7ca; max-width: 440px; text-wrap: pretty;">{{ activeDesc }}</p>
-        <div onClick="{{ openActive }}" style="margin-top: auto; cursor: pointer; align-self: flex-start; border: 1px solid #45454a; padding: 14px 24px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; color: #f0efec;" style-hover="border-color: #f0efec;">Open case study</div>
+        <div onClick="{{ openActive }}" style="margin-top: auto; cursor: pointer; align-self: flex-start; border: 1px solid #45454a; padding: 14px 24px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; color: #f0efec;" style-hover="border-color: #f0efec !important;">Open case study</div>
       </div>
     </div>
   </div>
@@ -170,10 +412,10 @@ a:hover { color: #d1310f; }
   </div>
   <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px 28px;">
     <sc-for list="{{ moreWork }}" as="pg" hint-placeholder-count="7">
-      <div onClick="{{ pg.open }}" style="display: flex; flex-direction: column; gap: 13px; cursor: pointer;" style-hover="opacity: 0.85;">
+      <div onClick="{{ pg.open }}" style="display: flex; flex-direction: column; gap: 13px; cursor: pointer;" style-hover="opacity: 0.85 !important;">
         <div style="overflow: hidden; aspect-ratio: 4/3; background: #141416;">
           <sc-if value="{{ pg.shot }}" hint-placeholder-val="{{ false }}">
-            <img src="{{ pg.shot }}" alt="{{ pg.name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);" style-hover="transform: scale(1.05);">
+            <img src="{{ pg.shot }}" alt="{{ pg.name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);" style-hover="transform: scale(1.05) !important;">
           </sc-if>
         </div>
         <div style="font-size: 17px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase;">{{ pg.name }}</div>
@@ -202,7 +444,7 @@ a:hover { color: #d1310f; }
         <h3 style="margin: 0; font-weight: 300; font-size: 22px; text-transform: uppercase; letter-spacing: 0.08em;">{{ g.h }}</h3>
         <div style="display: flex; flex-wrap: wrap; gap: 10px;">
           <sc-for list="{{ g.items }}" as="s" hint-placeholder-count="6">
-            <span style="border: 1px solid #cfcdc7; padding: 9px 15px; font-size: 15px; font-weight: 300; letter-spacing: 0.04em;">{{ s.t }}</span>
+            <span class="{{ s.cls }}" style="border: 1px solid #cfcdc7; padding: 9px 15px; font-size: 15px; font-weight: 300; letter-spacing: 0.04em; transition: background 0.25s, color 0.25s;" style-hover="background: #111 !important; color: #f0efec !important;"><svg class="skg" viewBox="0 0 24 24" aria-hidden="true"><sc-for list="{{ s.paths }}" as="gp" hint-placeholder-count="0"><path class="{{ gp.c }}" d="{{ gp.d }}" pathLength="100"></path></sc-for></svg><span>{{ s.t }}</span></span>
           </sc-for>
         </div>
       </div>
@@ -236,20 +478,20 @@ a:hover { color: #d1310f; }
 </section>
 
 <footer id="contact" data-screen-label="Footer" style="background: #08080a; color: #f0efec; padding: 120px 40px 40px;">
-  <a href="mailto:danishamehta@gmail.com" style="display: block; text-align: center; font-weight: 100; font-size: clamp(56px, 6.6vw, 124px); text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.05; color: #f0efec;" style-hover="color: #d1310f;">Let's work together <span style="font-size: 0.28em; vertical-align: super; font-weight: 300; letter-spacing: 0.1em;">[email me]</span></a>
+  <a href="mailto:danishamehta@gmail.com" style="display: block; text-align: center; font-weight: 100; font-size: clamp(56px, 6.6vw, 124px); text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.05; color: #f0efec;" style-hover="color: #d1310f !important;">Let's work together <span style="font-size: 0.28em; vertical-align: super; font-weight: 300; letter-spacing: 0.1em;">[email me]</span></a>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 110px; font-size: 15px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; color: #9a9a9e; flex-wrap: wrap; gap: 20px;">
     <nav style="display: flex; gap: 24px;">
-      <a href="#top" style="color: #9a9a9e;" style-hover="color: #f0efec;">Home</a>
-      <a href="#services" style="color: #9a9a9e;" style-hover="color: #f0efec;">Services</a>
-      <a href="#work" style="color: #9a9a9e;" style-hover="color: #f0efec;">Work</a>
-      <a href="#skills" style="color: #9a9a9e;" style-hover="color: #f0efec;">Skills</a>
-      <a href="#experience" style="color: #9a9a9e;" style-hover="color: #f0efec;">Experience</a>
-      <a href="#about" style="color: #9a9a9e;" style-hover="color: #f0efec;">About</a>
+      <a href="#top" style="color: #9a9a9e;" style-hover="color: #f0efec !important;">Home</a>
+      <a href="#services" style="color: #9a9a9e;" style-hover="color: #f0efec !important;">Services</a>
+      <a href="#work" style="color: #9a9a9e;" style-hover="color: #f0efec !important;">Work</a>
+      <a href="#skills" style="color: #9a9a9e;" style-hover="color: #f0efec !important;">Skills</a>
+      <a href="#experience" style="color: #9a9a9e;" style-hover="color: #f0efec !important;">Experience</a>
+      <a href="#about" style="color: #9a9a9e;" style-hover="color: #f0efec !important;">About</a>
     </nav>
-    <a href="mailto:danishamehta@gmail.com" style="color: #9a9a9e; text-transform: none;" style-hover="color: #f0efec;">danishamehta@gmail.com</a>
+    <a href="mailto:danishamehta@gmail.com" style="color: #9a9a9e; text-transform: none;" style-hover="color: #f0efec !important;">danishamehta@gmail.com</a>
     <div style="display: flex; gap: 24px; align-items: center;">
-      <a href="http://linkedin.com/in/danisha-mehta-9488b4183" target="_blank" rel="noopener" style="color: #9a9a9e;" style-hover="color: #f0efec;">LinkedIn</a>
-      <a href="http://be.net/danishamehta14" target="_blank" rel="noopener" style="color: #9a9a9e;" style-hover="color: #f0efec;">Behance</a>
+      <a href="http://linkedin.com/in/danisha-mehta-9488b4183" target="_blank" rel="noopener" style="color: #9a9a9e;" style-hover="color: #f0efec !important;">LinkedIn</a>
+      <a href="http://be.net/danishamehta14" target="_blank" rel="noopener" style="color: #9a9a9e;" style-hover="color: #f0efec !important;">Behance</a>
       <span>LDN — {{ clockFull }}</span>
     </div>
   </div>
@@ -258,10 +500,10 @@ a:hover { color: #d1310f; }
 <sc-if value="{{ pageOpen }}" hint-placeholder-val="{{ false }}">
   <div style="position: fixed; inset: 0; z-index: 85; background: #f0efec; color: #111; overflow-y: auto; animation: fadeUp 0.35s ease both;">
     <div style="position: sticky; top: 0; z-index: 5; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 30px; padding: 15px 40px; box-sizing: border-box; background: rgba(240,239,236,0.6); backdrop-filter: blur(22px) saturate(1.7); -webkit-backdrop-filter: blur(22px) saturate(1.7); border-bottom: 1px solid rgba(17,17,17,0.08);">
-      <a href="#top" onClick="{{ goHome }}" style="justify-self: start; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; color: #111;" style-hover="color: #d1310f;">DM</a>
+      <a href="#top" onClick="{{ goHome }}" style="justify-self: start; font-weight: 600; font-size: 22px; letter-spacing: 0.04em; color: #111;" style-hover="color: #d1310f !important;">DM</a>
       <nav style="justify-self: center; display: flex; gap: 28px;">
         <sc-for list="{{ headerNav }}" as="h" hint-placeholder-count="6">
-          <a href="{{ h.href }}" onClick="{{ h.onClick }}" style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; color: #46443f;" style-hover="color: #d1310f;">{{ h.label }}</a>
+          <a href="{{ h.href }}" onClick="{{ h.onClick }}" style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; color: #46443f;" style-hover="color: #d1310f !important;">{{ h.label }}</a>
         </sc-for>
       </nav>
       <div onClick="{{ closePage }}" style="justify-self: end; cursor: pointer; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300;">[Close]</div>
@@ -291,7 +533,7 @@ a:hover { color: #d1310f; }
           <h2 style="margin: 0; font-weight: 200; font-size: clamp(34px, 3vw, 56px); text-transform: uppercase; letter-spacing: 0.03em; border-top: 1px dashed #b5b3ad; padding-top: 34px;">{{ page.gridTitle }}</h2>
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 36px;">
             <sc-for list="{{ pageGrid }}" as="g" hint-placeholder-count="3">
-              <div style="background: #e9e7e2; padding: 36px 32px; display: flex; flex-direction: column; gap: 18px; transition: background 0.35s, color 0.35s, transform 0.35s cubic-bezier(0.22,1,0.36,1);" style-hover="background: #111; color: #f0efec; transform: translateY(-6px);">
+              <div style="background: #e9e7e2; padding: 36px 32px; display: flex; flex-direction: column; gap: 18px; transition: background 0.35s, color 0.35s, transform 0.35s cubic-bezier(0.22,1,0.36,1);" style-hover="background: #111 !important; color: #f0efec !important; transform: translateY(-6px) !important;">
                 <div style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; opacity: 0.65;">{{ g.n }}</div>
                 <h3 style="margin: 0; font-weight: 200; font-size: 30px; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.1;">{{ g.h }}</h3>
                 <p style="margin: 0; font-size: 17px; font-weight: 300; line-height: 1.6; opacity: 0.9; text-wrap: pretty;">{{ g.t }}</p>
@@ -334,10 +576,10 @@ a:hover { color: #d1310f; }
                   <div onClick="{{ pi.open }}" style="display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
                     <div style="overflow: hidden; aspect-ratio: 4/3; background: #e2e0da;">
                       <sc-if value="{{ pi.hasShot }}" hint-placeholder-val="{{ true }}">
-                        <img src="{{ pi.shot }}" alt="{{ pi.name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);" style-hover="transform: scale(1.06);">
+                        <img src="{{ pi.shot }}" alt="{{ pi.name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);" style-hover="transform: scale(1.06) !important;">
                       </sc-if>
                       <sc-if value="{{ pi.noShot }}" hint-placeholder-val="{{ false }}">
-                        <div style="box-sizing: border-box; width: 100%; height: 100%; background: #101014; color: #f0efec; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transition: background 0.35s;" style-hover="background: #d1310f;">
+                        <div style="box-sizing: border-box; width: 100%; height: 100%; background: #101014; color: #f0efec; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transition: background 0.35s;" style-hover="background: #d1310f !important;">
                           <div style="font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300; opacity: 0.7;">{{ pi.cat }}</div>
                           <div style="font-weight: 100; font-size: 30px; line-height: 1; text-transform: uppercase; letter-spacing: 0.02em;">{{ pi.name }}</div>
                         </div>
@@ -360,7 +602,7 @@ a:hover { color: #d1310f; }
               <h3 style="margin: 0; font-weight: 300; font-size: 22px; text-transform: uppercase; letter-spacing: 0.08em;">{{ cg.h }}</h3>
               <div style="display: flex; flex-wrap: wrap; gap: 10px;">
                 <sc-for list="{{ cg.items }}" as="ci" hint-placeholder-count="6">
-                  <span style="border: 1px solid #cfcdc7; padding: 9px 15px; font-size: 15px; font-weight: 300; letter-spacing: 0.04em; transition: background 0.25s, color 0.25s;" style-hover="background: #111; color: #f0efec;">{{ ci.t }}</span>
+                  <span class="{{ ci.cls }}" style="border: 1px solid #cfcdc7; padding: 9px 15px; font-size: 15px; font-weight: 300; letter-spacing: 0.04em; transition: background 0.25s, color 0.25s;" style-hover="background: #111 !important; color: #f0efec !important;"><svg class="skg" viewBox="0 0 24 24" aria-hidden="true"><sc-for list="{{ ci.paths }}" as="gp" hint-placeholder-count="0"><path class="{{ gp.c }}" d="{{ gp.d }}" pathLength="100"></path></sc-for></svg><span>{{ ci.t }}</span></span>
                 </sc-for>
               </div>
             </div>
@@ -405,7 +647,7 @@ a:hover { color: #d1310f; }
 <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
   <div style="position: fixed; inset: 0; z-index: 90; background: #f0efec; color: #111; overflow-y: auto; animation: fadeUp 0.35s ease both;">
     <div style="position: sticky; top: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; box-sizing: border-box; background: rgba(240,239,236,0.6); backdrop-filter: blur(22px) saturate(1.7); -webkit-backdrop-filter: blur(22px) saturate(1.7); border-bottom: 1px solid rgba(17,17,17,0.08); color: #111;">
-      <a href="#top" onClick="{{ goHome }}" style="font-weight: 600; font-size: 22px; letter-spacing: 0.04em; color: #111;" style-hover="color: #d1310f;">DM</a>
+      <a href="#top" onClick="{{ goHome }}" style="font-weight: 600; font-size: 22px; letter-spacing: 0.04em; color: #111;" style-hover="color: #d1310f !important;">DM</a>
       <div onClick="{{ closeDetail }}" style="cursor: pointer; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300;">[Close]</div>
     </div>
 
@@ -533,7 +775,7 @@ a:hover { color: #d1310f; }
             <h2 style="margin: 0; font-weight: 200; font-size: clamp(36px, 3.2vw, 58px); text-transform: uppercase; letter-spacing: 0.03em; border-top: 1px dashed #b5b3ad; padding-top: 34px;">Resources</h2>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 30px;">
               <sc-for list="{{ detailResources }}" as="r" hint-placeholder-count="3">
-                <a href="{{ r.href }}" target="_blank" rel="noopener" style="display: flex; flex-direction: column; gap: 12px; padding: 30px; background: #e9e7e2; color: #111; min-height: 150px;" style-hover="background: #111; color: #f0efec;">
+                <a href="{{ r.href }}" target="_blank" rel="noopener" style="display: flex; flex-direction: column; gap: 12px; padding: 30px; background: #e9e7e2; color: #111; min-height: 150px;" style-hover="background: #111 !important; color: #f0efec !important;">
                   <span style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300; opacity: 0.7;">{{ r.kind }}</span>
                   <span style="font-size: 22px; font-weight: 300; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.2;">{{ r.label }}</span>
                   <span style="font-size: 15px; font-weight: 300; line-height: 1.5; opacity: 0.75; margin-top: auto;">{{ r.note }}</span>
@@ -546,7 +788,7 @@ a:hover { color: #d1310f; }
     </sc-if>
 
     <div style="max-width: 1500px; margin: 0 auto; padding: 0 40px;">
-      <div onClick="{{ openNext }}" style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed #b5b3ad; margin-top: 110px; padding: 34px 0 80px; cursor: pointer;" style-hover="color: #d1310f;">
+      <div onClick="{{ openNext }}" style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed #b5b3ad; margin-top: 110px; padding: 34px 0 80px; cursor: pointer;" style-hover="color: #d1310f !important;">
         <span style="font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300;">Next project</span>
         <span style="font-weight: 100; font-size: clamp(40px, 4.2vw, 76px); text-transform: uppercase; letter-spacing: 0.04em;">{{ nextName }} →</span>
       </div>
@@ -571,9 +813,30 @@ class Component extends DCLogic {
       el.style.zIndex = String(20 - Math.round(ad * 4));
     }
   }
+  _observeGlyphs() {
+    if (typeof IntersectionObserver === 'undefined') {
+      document.querySelectorAll('.skchip').forEach(el => el.classList.add('is-in'));
+      return;
+    }
+    if (!this._glyphIO) {
+      this._glyphIO = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-in');
+          this._glyphIO.unobserve(e.target);
+        });
+      }, { threshold: 0.3, rootMargin: '0px 0px -8% 0px' });
+    }
+    document.querySelectorAll('.skchip:not([data-glyph-obs])').forEach((el, i) => {
+      el.setAttribute('data-glyph-obs', '1');
+      el.style.setProperty('--i', String(i % 9));
+      this._glyphIO.observe(el);
+    });
+  }
   componentDidUpdate(prevProps) {
     if (prevProps.tagCycleSeconds !== this.props.tagCycleSeconds) this._startTagCycle();
     this._applyCards();
+    this._observeGlyphs();
   }
   componentDidMount() {
     this._clock = setInterval(() => this.setState({ now: new Date() }), 1000);
@@ -612,6 +875,7 @@ class Component extends DCLogic {
       this._followRaf = requestAnimationFrame(this._follow);
     });
     this._applyCards();
+    this._observeGlyphs();
   }
   _startTagCycle() {
     clearInterval(this._tag);
@@ -637,12 +901,12 @@ class Component extends DCLogic {
       { name: 'SenseIT', cat: 'Product', senseit: true, kind: 'img',
         stack: 'OPPO×RCA · Inclusive tech', role: 'Product design & research', credit: 'With Yannick Ewertz · 2022',
         desc: 'A tactile system that lets a visually impaired person navigate what is on screen and type back, without listening through a voice assistant. Exhibited at the London Design Festival 2022.',
-        shot: W + 'ee9626_ac5026a88c0349e2b368b6ee8a56165b~mv2.jpg/v1/crop/x_0,y_137,w_2560,h_1523/fill/w_1400,h_830,al_c,q_88,enc_avif,quality_auto/Keyboard_53.jpg' },
+        shot: './images/senseit.jpg', hero: './images/senseit.jpg' },
       { name: 'Packaging Design', cat: 'Product', kind: 'img',
         stack: 'Structural & graphic packaging', role: 'Product design, solo', credit: 'Nirma University · 2020',
         desc: 'A shuttlecock tube redesigned around what badminton players actually struggle with: a tube too long to handle, a lid too tight to open, no way to count what is left, and no way to humidify before practice.',
-        shot: im('a8a034_0f8ff7b185794e14b9036028fd1bced3~mv2.jpg', 1400, 1000, 'crop/x_0,y_180,w_2558,h_1825'),
-        hero: im('a8a034_0f8ff7b185794e14b9036028fd1bced3~mv2.jpg', 1920, 1000, 'crop/x_0,y_180,w_2558,h_1825'),
+        shot: './images/packaging.jpg',
+        hero: './images/packaging.jpg',
         specs: [{ label: 'Category', value: 'Sports equipment packaging' }, { label: 'Year', value: '2020' }, { label: 'Method', value: 'Manufacturing study, user survey, mock-ups' }, { label: 'Output', value: '16-sided pack, humidifier core, surface graphics' }],
         journeyTitle: 'Journey of the pack',
         journey: [
@@ -660,8 +924,8 @@ class Component extends DCLogic {
       { name: 'Swoosh', cat: 'Product', kind: 'img',
         stack: 'Toy design · Mechanical', role: 'Product design', credit: 'With Nirja Shiroya',
         desc: 'A mechanical toy for three-to-five year olds, built from ball bearings and a magic-wheel drive — developed through three working prototypes and tested with a real five-year-old.',
-        shot: im('a8a034_7e726b3e41e64f6a8ce892a608bc7cab~mv2.jpg', 1400, 1000),
-        hero: im('a8a034_9f9e865942f04a849309f848c08a5bcc~mv2.jpg', 1920, 1100),
+        shot: './images/swoosh.jpg',
+        hero: './images/swoosh.jpg',
         specs: [{ label: 'Users', value: 'Children aged 3–5' }, { label: 'Drive', value: 'Ball bearings + magic wheels' }, { label: 'Prototypes', value: 'Three, tested with users' }, { label: 'Material', value: 'Flexible plywood, MS pipe skeleton' }],
         journeyTitle: 'Three prototypes',
         journey: [
@@ -676,8 +940,8 @@ class Component extends DCLogic {
       { name: 'FIFI', cat: 'Product', kind: 'img',
         stack: 'Smart toy · Arduino & IoT', role: 'Product & UX design', credit: 'With Hetvi Adalja',
         desc: 'A glowing companion that runs away from toddlers. IR sensors on four sides, a Neopixel ring, and a companion app to set colour and movement — a chase built on the Tom & Jerry dynamic.',
-        shot: im('a8a034_f3633396872241879ae3e25f5696921a~mv2.jpg', 1400, 1000),
-        hero: im('a8a034_8536ad401a954401a7481415bce8b9a1~mv2.png', 1920, 1050),
+        shot: './images/fifi.jpg',
+        hero: './images/fifi.jpg',
         specs: [{ label: 'Sensing', value: 'IR on four sides' }, { label: 'Light', value: 'Neopixel ring, app-controlled' }, { label: 'Build', value: '3D printed ABS, snap fits, lathe-verified' }, { label: 'App', value: 'Prototyped in Adobe XD' }],
         journeyTitle: 'From dynamic to device',
         journey: [
@@ -853,21 +1117,21 @@ class Component extends DCLogic {
   renderVals() {
     const { featured, more, all, im, W } = this._data();
     const tags = [
-      { img: im('a8a034_fa0626b7a275444b9d7c18e589f46125~mv2.jpg', 900, 600), label: 'SenseIT — OPPO×RCA, 2022' },
+      { img: './images/senseit.jpg', label: 'SenseIT — OPPO×RCA, 2022' },
       { img: W + 'ee9626_72fad720ce804b80947709d25a45f96e~mv2.jpg/v1/fill/w_900,h_600,al_c,q_88,enc_avif,quality_auto/ldf.jpg', label: 'Exhibited — London Design Festival 2022' },
-      { img: im('a8a034_0f8ff7b185794e14b9036028fd1bced3~mv2.jpg', 900, 600, 'crop/x_0,y_180,w_2558,h_1825'), label: 'Packaging Design — shuttle pack, 2020' },
+      { img: './images/packaging.jpg', label: 'Packaging Design — shuttle pack, 2020' },
       { img: im('a8a034_3645affee52448f9a4b5b42df30e4f28~mv2.jpg', 900, 600, 'crop/x_0,y_310,w_1920,h_1187'), label: 'Piggy Bank — interactive product' },
     ];
     const navDefs = [
-      { key: null, label: 'Home', href: '#top', meta: 'Back to top', img: im('a8a034_fa0626b7a275444b9d7c18e589f46125~mv2.jpg', 1000, 750),
+      { key: null, label: 'Home', href: '#top', meta: 'Back to top', img: './images/senseit.jpg',
         caption: 'SenseIT — OPPO×RCA, 2022', blurb: 'Product, digital and agentic design from one person — research through to a built, working thing.' },
-      { key: 'services', label: 'Services', href: '#services', meta: 'Three practices', img: im('a8a034_0f8ff7b185794e14b9036028fd1bced3~mv2.jpg', 1000, 750, 'crop/x_0,y_180,w_2558,h_1825'),
+      { key: 'services', label: 'Services', href: '#services', meta: 'Three practices', img: './images/packaging.jpg',
         caption: 'Packaging Design — shuttle pack', blurb: 'What I take on, what you get back, and how a project actually runs from first call to handover.' },
-      { key: 'work', label: 'Work', href: '#work', meta: '18 projects', img: im('a8a034_9f9e865942f04a849309f848c08a5bcc~mv2.jpg', 1000, 750),
+      { key: 'work', label: 'Work', href: '#work', meta: '18 projects', img: './images/swoosh.jpg',
         caption: 'Swoosh — mechanical toy', blurb: 'Every project in one place, grouped by product, digital and agentic — each with its own case study.' },
       { key: 'skills', label: 'Skills', href: '#skills', meta: 'Design → build → automate', img: im('a8a034_db9a54d7d9ff4d379cd3156f2319c65d~mv2.jpg', 1000, 750, 'crop/x_0,y_3,w_1920,h_1034'),
         caption: 'Game Design — 3 Days 2 Nights', blurb: 'The technical side: what I code, what I prototype, and which tools do which part of the job.' },
-      { key: 'experience', label: 'Experience', href: '#experience', meta: '2014 — now', img: im('a8a034_f3633396872241879ae3e25f5696921a~mv2.jpg', 1000, 750),
+      { key: 'experience', label: 'Experience', href: '#experience', meta: '2014 — now', img: './images/fifi.jpg',
         caption: 'FIFI — smart companion toy', blurb: 'Twelve roles across studios, classrooms and client work, plus education and awards.' },
       { key: 'about', label: 'About me', href: '#about', meta: 'RCA · London', img: W + 'a8a034_75001b8a8cbb4f0d922fb051dd08af6d~mv2.jpg/v1/fill/w_1000,h_750,al_c,q_85,enc_avif,quality_auto/IMG_4949_JPG.jpg',
         caption: 'Danisha Mehta', blurb: 'Product Design graduate of the Royal College of Art, now working across design, code and automation.' },
@@ -888,7 +1152,48 @@ class Component extends DCLogic {
 
     const byName = n => all.find(p => p.name === n);
     const tile = n => { const p = byName(n); const shot = p.shot || p.hero || ''; return { name: p.name, stack: p.stack, shot, hasShot: !!shot, noShot: !shot, cat: p.cat, open: () => this.setState({ page: null, detailIdx: all.indexOf(p), jstep: 0 }) }; };
-    const chips = arr => arr.map(t => ({ t }));
+    const GLYPHS = {
+      "AI workflow design": [{"d":"M3 17a2 2 0 104 0 2 2 0 10-4 0","c":"p1"},{"d":"M10 7a2 2 0 104 0 2 2 0 10-4 0","c":"p2"},{"d":"M17 17a2 2 0 104 0 2 2 0 10-4 0","c":"p3 m-flow"},{"d":"M6.6 15.5L10.4 8.6","c":"p4 m-flow"},{"d":"M13.6 8.6L17.4 15.5","c":"p5"}],
+      "Prompt engineering": [{"d":"M4 8L7 12L4 16","c":"p1"},{"d":"M10 16L20 16","c":"p2 m-type"},{"d":"M10 9L17 9","c":"p3 m-caret"}],
+      "Agent skills": [{"d":"M12 3L20 7.5L20 16.5L12 21L4 16.5L4 7.5L12 3","c":"p1"},{"d":"M4 9.5L1.5 9.5","c":"p2 m-snap"},{"d":"M20 9.5L22.5 9.5","c":"p3 m-snap"},{"d":"M12 21L12 23.5","c":"p4 m-snap"}],
+      "Content automation": [{"d":"M4 4h13v16h-13z","c":"p1"},{"d":"M7 9L14 9","c":"p2 m-fill"},{"d":"M7 12.5L14 12.5","c":"p3 m-fill"},{"d":"M7 16L11 16","c":"p4 m-fill"}],
+      "n8n / Zapier": [{"d":"M2.3999999999999995 12a2.2 2.2 0 104.4 0 2.2 2.2 0 10-4.4 0","c":"p1 m-pulseA"},{"d":"M17.2 12a2.2 2.2 0 104.4 0 2.2 2.2 0 10-4.4 0","c":"p2 m-pulseB"},{"d":"M13.2 6.5L9 12.4L12 12.4L10.8 17.5L15 11.6L12 11.6L13.2 6.5","c":"p3 m-zap"}],
+      "No-code & low-code": [{"d":"M5 14h14v5h-14z","c":"p1"},{"d":"M7 8.5h10v4h-10z","c":"p2 m-stackB"},{"d":"M9 3h6v4h-6z","c":"p3 m-stackC"}],
+      "Bubble.io": [{"d":"M6 13a6 6 0 1012 0 6 6 0 10-12 0","c":"p1"},{"d":"M15.5 6.5a2 2 0 104 0 2 2 0 10-4 0","c":"p2 m-orbit"}],
+      "HTML / CSS": [{"d":"M8 7L3.5 12L8 17","c":"p1 m-partL"},{"d":"M16 7L20.5 12L16 17","c":"p2 m-partR"},{"d":"M13.5 5.5L10.5 18.5","c":"p3"}],
+      "JavaScript": [{"d":"M9 5L6.5 5L6.5 11L4.5 12L6.5 13L6.5 19L9 19","c":"p1"},{"d":"M15 5L17.5 5L17.5 11L19.5 12L17.5 13L17.5 19L15 19","c":"p2"},{"d":"M12 9L12 15","c":"p3 m-caret"}],
+      "Shopify Liquid": [{"d":"M12 3.5L17.5 11L17.5 15L12 20.5L6.5 15L6.5 11L12 3.5","c":"p1 m-drip"},{"d":"M10 11.5L10 14","c":"p2 m-fill"},{"d":"M14 11.5L14 14","c":"p3 m-fill"}],
+      "Python": [{"d":"M12 4L17 7L17 12L7 12L7 17L12 20","c":"p1 m-coil"},{"d":"M8.6 7a0.9 0.9 0 101.8 0 0.9 0.9 0 10-1.8 0","c":"p2 m-blink"},{"d":"M13.6 17a0.9 0.9 0 101.8 0 0.9 0.9 0 10-1.8 0","c":"p3 m-blink"}],
+      "Webflow": [{"d":"M3.5 5h17v14h-17z","c":"p1"},{"d":"M3.5 9L20.5 9","c":"p2"},{"d":"M6 14.5L9 12L12 15.5L15 11.5L18 14.5","c":"p3 m-flowline"}],
+      "Wix": [{"d":"M3 7L6.5 17L10 10L13.5 17L17 7","c":"p1"},{"d":"M16.5 11L16.5 21L19 18.5L20.5 22L22 21.2L20.4 17.9L23 17.5L16.5 11","c":"p2 m-click"}],
+      "UI/UX design": [{"d":"M3.5 4h17v16h-17z","c":"p1"},{"d":"M6 6.5h5v5h-5z","c":"p2 m-shuffleA"},{"d":"M13.5 6.5h5v11h-5z","c":"p3 m-shuffleB"}],
+      "User research": [{"d":"M4 10a6 6 0 1012 0 6 6 0 10-12 0","c":"p1 m-scan"},{"d":"M14.5 14.5L20.5 20.5","c":"p2 m-scan"},{"d":"M8.4 8.5a1.6 1.6 0 103.2 0 1.6 1.6 0 10-3.2 0","c":"p3 m-scan"}],
+      "Wireframing": [{"d":"M3.5 4h17v16h-17z","c":"p1"},{"d":"M7 9L17 9","c":"p2 m-fill"},{"d":"M7 13L17 13","c":"p3 m-fill"},{"d":"M7 17L12 17","c":"p4 m-fill"}],
+      "Prototyping": [{"d":"M2.5 7h8v10h-8z","c":"p1"},{"d":"M13.5 7h8v10h-8z","c":"p2"},{"d":"M9 12L15 12","c":"p3 m-advance"},{"d":"M13.2 10.4L15 12L13.2 13.6","c":"p4 m-advance"}],
+      "Figma": [{"d":"M4.8 7a3.2 3.2 0 106.4 0 3.2 3.2 0 10-6.4 0","c":"p1"},{"d":"M12.8 7a3.2 3.2 0 106.4 0 3.2 3.2 0 10-6.4 0","c":"p2 m-splitR"},{"d":"M4.8 14.5a3.2 3.2 0 106.4 0 3.2 3.2 0 10-6.4 0","c":"p3 m-splitL"},{"d":"M9.6 20a2.4 2.4 0 104.8 0 2.4 2.4 0 10-4.8 0","c":"p4 m-splitD"}],
+      "Adobe XD": [{"d":"M3.5 4h17v16h-17z","c":"p1"},{"d":"M8 9L14 16","c":"p2 m-xspin"},{"d":"M14 9L8 16","c":"p3 m-xspin"}],
+      "Shopify": [{"d":"M5 8L19 8L20 20L4 20L5 8","c":"p1"},{"d":"M9 10L9 6.5L12 4.5L15 6.5L15 10","c":"p2 m-lift"}],
+      "OpenCart": [{"d":"M3 5L6 5L8.5 15L18 15L20 8L7 8","c":"p1 m-roll"},{"d":"M7.9 18.5a1.6 1.6 0 103.2 0 1.6 1.6 0 10-3.2 0","c":"p2 m-roll"},{"d":"M15.4 18.5a1.6 1.6 0 103.2 0 1.6 1.6 0 10-3.2 0","c":"p3 m-roll"}],
+      "Product content strategy": [{"d":"M4 4L13 4L20 11L11 20L4 13L4 4","c":"p1"},{"d":"M6.8 8a1.2 1.2 0 102.4 0 1.2 1.2 0 10-2.4 0","c":"p2"},{"d":"M11 11L15 11","c":"p3 m-fill"}],
+      "Conversion optimisation": [{"d":"M3.5 5L20.5 5L14 12.5L14 19L10 21L10 12.5L3.5 5","c":"p1"},{"d":"M10.9 8a1.1 1.1 0 102.2 0 1.1 1.1 0 10-2.2 0","c":"p2 m-drop"}],
+      "Social commerce": [{"d":"M3.8 7a2.2 2.2 0 104.4 0 2.2 2.2 0 10-4.4 0","c":"p1"},{"d":"M15.8 7a2.2 2.2 0 104.4 0 2.2 2.2 0 10-4.4 0","c":"p2"},{"d":"M9.8 18a2.2 2.2 0 104.4 0 2.2 2.2 0 10-4.4 0","c":"p3"},{"d":"M7.8 8.4L10.6 16.2","c":"p4 m-flow"},{"d":"M16.2 8.4L13.4 16.2","c":"p5 m-flow"}],
+      "Rhino": [{"d":"M3 18L9 6L15 18L21 8","c":"p1 m-bend"},{"d":"M7.6 4.6h2.8v2.8h-2.8z","c":"p2 m-grab"},{"d":"M19.6 6.6h2.8v2.8h-2.8z","c":"p3"}],
+      "SolidWorks": [{"d":"M4 8h10v10h-10z","c":"p1"},{"d":"M4 8L8 4L18 4L18 14L14 18","c":"p2 m-extrude"},{"d":"M14 8L18 4","c":"p3 m-extrude"}],
+      "Creo": [{"d":"M6 8h13v9h-13z","c":"p1 m-dim"},{"d":"M6 20.5L19 20.5","c":"p2"},{"d":"M7.4 19.2L6 20.5L7.4 21.8","c":"p3 m-dimL"},{"d":"M17.6 19.2L19 20.5L17.6 21.8","c":"p4 m-dimR"}],
+      "KeyShot": [{"d":"M5.5 13a5.5 5.5 0 1011.0 0 5.5 5.5 0 10-11.0 0","c":"p1 m-litsphere"},{"d":"M18 6L21 3","c":"p2 m-ray"},{"d":"M3.5 20.5L20.5 20.5","c":"p3 m-shadow"}],
+      "AutoCAD 2D/3D": [{"d":"M4 9h11v11h-11z","c":"p1"},{"d":"M4 9L8 5L19 5L19 16L15 20","c":"p2 m-depth"}],
+      "Arduino": [{"d":"M3 7h18v10h-18z","c":"p1"},{"d":"M6 12L9 12L10.5 9.5L13 14.5L14.5 12L17 12","c":"p2 m-signal"},{"d":"M18.999 12a0.001 0.001 0 100.002 0 0.001 0.001 0 10-0.002 0","c":"p3"}],
+      "Adobe Creative Suite": [{"d":"M3 6h11v12h-11z","c":"p1 m-cycA"},{"d":"M6.5 8h11v12h-11z","c":"p2 m-cycB"},{"d":"M10 10h11v12h-11z","c":"p3 m-cycC"}],
+      "Procreate": [{"d":"M5 19L8 10L11 19L8 21L5 19","c":"p1 m-nib"},{"d":"M8 10L16 3","c":"p2 m-nib"},{"d":"M4 22.5L20 22.5","c":"p3 m-strokeon"}],
+      "Model making": [{"d":"M12 16L20 19.5L12 23L4 19.5L12 16","c":"p1"},{"d":"M12 10L20 13.5L12 17L4 13.5L12 10","c":"p2 m-assyB"},{"d":"M12 4L20 7.5L12 11L4 7.5L12 4","c":"p3 m-assyC"}],
+      "Laser cutting": [{"d":"M12 1.5L12 12","c":"p1 m-beam"},{"d":"M3.5 14h17v6h-17z","c":"p2"},{"d":"M6.5 17L17.5 17","c":"p3 m-cutpath"}],
+      "DTG printing": [{"d":"M3.5 4h17v4h-17z","c":"p1 m-head"},{"d":"M4 20L20 20","c":"p2"},{"d":"M8 13L8 13.01","c":"p3 m-ink1"},{"d":"M12 13L12.01 13","c":"p4 m-ink2"},{"d":"M16 13L16.01 13","c":"p5 m-ink3"}],
+      "Canva": [{"d":"M3.5 4h17v16h-17z","c":"p1"},{"d":"M6.5 7h4.5v4.5h-4.5z","c":"p2 m-sw1"},{"d":"M13 7h4.5v4.5h-4.5z","c":"p3 m-sw2"},{"d":"M6.5 13.5h4.5v4.5h-4.5z","c":"p4 m-sw3"}],
+      "Microsoft Office": [{"d":"M5 3L15 3L19 7L19 21L5 21L5 3","c":"p1"},{"d":"M15 3L15 7L19 7","c":"p2 m-foldc"},{"d":"M8 12L16 12","c":"p3 m-fill"},{"d":"M8 16L16 16","c":"p4 m-fill"}],
+    };
+    const slug = n => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const skillItem = t => { const g = GLYPHS[t] || []; return { t, cls: 'skchip g-' + slug(t), paths: g, hasGlyph: g.length > 0, noGlyph: g.length === 0 }; };
+    const chips = arr => arr.map(skillItem);
     const PAGES = {
       services: {
         eyebrow: 'Services', title: 'What I take on',
@@ -953,8 +1258,8 @@ class Component extends DCLogic {
       },
       experience: {
         eyebrow: 'Experience', title: 'Where I have worked',
-        lede: 'Twelve roles across design studios, classrooms, retail and client work — product design internships in India, teaching and curriculum work in London, and freelance design and automation since 2024.',
-        meta: [{ label: 'Current', value: 'Freelance web design & automation, London' }, { label: 'Teaching', value: 'Curriculum lead & design instructor, ONELAB College' }, { label: 'Studio', value: 'Product design internships across four studios' }, { label: 'Span', value: '2014 — present' }],
+        lede: 'Twelve roles across design studios, classrooms, retail and client work — product design internships in India, teaching and curriculum work in London, and web design and automation since 2024.',
+        meta: [{ label: 'Current', value: 'Web designer — web design & automation, London' }, { label: 'Teaching', value: 'Curriculum lead & design instructor, ONELAB College' }, { label: 'Studio', value: 'Product design internships across four studios' }, { label: 'Span', value: '2014 — present' }],
         rowsTitle: 'Roles',
         rows: [
           { a: 'Nov 2024 — present', b: 'Web Designer · London', c: 'Web design & automation' },
@@ -1100,12 +1405,12 @@ class Component extends DCLogic {
         { h: 'Automation & agents', t: 'Workflow design before tooling: find what repeats, decide what a machine should do and where a human must stay. Then build it — agent skills, n8n and Zapier chains, and prompt systems that behave the same way on the hundredth run as on the first.' },
       ],
       skillGroups: [
-        { h: 'AI & automation', items: ['AI workflow design', 'Prompt engineering', 'Agent skills', 'Content automation', 'n8n / Zapier', 'No-code & low-code', 'Bubble.io'].map(t => ({ t })) },
-        { h: 'Code & front-end', items: ['HTML / CSS', 'JavaScript', 'Shopify Liquid', 'Python', 'Webflow', 'Wix'].map(t => ({ t })) },
-        { h: 'Product & UX', items: ['UI/UX design', 'User research', 'Wireframing', 'Prototyping', 'Figma', 'Adobe XD'].map(t => ({ t })) },
-        { h: 'Ecommerce & digital systems', items: ['Shopify', 'OpenCart', 'Product content strategy', 'Conversion optimisation', 'Social commerce'].map(t => ({ t })) },
-        { h: 'Design & technical', items: ['Rhino', 'SolidWorks', 'Creo', 'KeyShot', 'AutoCAD 2D/3D', 'Arduino', 'Adobe Creative Suite', 'Procreate'].map(t => ({ t })) },
-        { h: 'Making & tools', items: ['Model making', 'Laser cutting', 'DTG printing', 'Canva', 'Microsoft Office'].map(t => ({ t })) },
+        { h: 'AI & automation', items: ['AI workflow design', 'Prompt engineering', 'Agent skills', 'Content automation', 'n8n / Zapier', 'No-code & low-code', 'Bubble.io'].map(skillItem) },
+        { h: 'Code & front-end', items: ['HTML / CSS', 'JavaScript', 'Shopify Liquid', 'Python', 'Webflow', 'Wix'].map(skillItem) },
+        { h: 'Product & UX', items: ['UI/UX design', 'User research', 'Wireframing', 'Prototyping', 'Figma', 'Adobe XD'].map(skillItem) },
+        { h: 'Ecommerce & digital systems', items: ['Shopify', 'OpenCart', 'Product content strategy', 'Conversion optimisation', 'Social commerce'].map(skillItem) },
+        { h: 'Design & technical', items: ['Rhino', 'SolidWorks', 'Creo', 'KeyShot', 'AutoCAD 2D/3D', 'Arduino', 'Adobe Creative Suite', 'Procreate'].map(skillItem) },
+        { h: 'Making & tools', items: ['Model making', 'Laser cutting', 'DTG printing', 'Canva', 'Microsoft Office'].map(skillItem) },
       ],
       experience: [
         { dates: 'Nov 2024 — present', org: 'Web Designer · London', role: 'Web design & automation' },
